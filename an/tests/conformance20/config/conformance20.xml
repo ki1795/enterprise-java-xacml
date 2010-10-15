@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration
+    xmlns="http://an.com/configuration"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://an.com/configuration @CONFIGURATION_XSD@">
+    <DefaultLog
+        path="@LOG_DIR@/conformance20.log"
+        an.log.Logger="an.log.DefaultLogger"
+        rolloverSize="-1"
+        level="all"/>
+</Configuration>

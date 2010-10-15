@@ -1,0 +1,25 @@
+<project name="tests" default="build" basedir=".">
+    <target name="build">
+        <ant target="build" dir="unit" inheritall="false"/>
+        <ant target="build" dir="indexing" inheritall="false"/>
+        <ant target="build" dir="conformance20" inheritall="false"/>
+    </target>
+
+    <target name="config" description="">
+        <ant target="config" dir="unit" inheritall="false"/>
+        <ant target="config" dir="indexing" inheritall="false"/>
+        <ant target="config" dir="conformance20" inheritall="false"/>
+    </target>
+
+    <target name="clean" description="">
+        <ant target="clean" dir="unit" inheritall="false"/>
+        <ant target="clean" dir="indexing" inheritall="false"/>
+        <ant target="clean" dir="conformance20" inheritall="false"/>
+    </target>
+
+    <target name="test" description="">
+        <ant target="test" dir="unit" inheritall="false"/>
+        <ant target="test" dir="indexing" inheritall="false"/>
+        <ant target="test" dir="conformance20" inheritall="false"/>
+    </target>
+</project>
