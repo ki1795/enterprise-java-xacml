@@ -1,0 +1,19 @@
+<project name="components" default="build" basedir=".">
+    <target name="build">
+        <ant target="build" dir="util" inheritall="false"/>
+        <ant target="build" dir="pdp" inheritall="false"/>
+        <ant target="build" dir="dems" inheritall="false"/>
+    </target>
+    
+    <target name="config" description="">
+        <ant target="config" dir="util" inheritall="false"/>
+        <ant target="config" dir="pdp" inheritall="false"/>
+        <ant target="config" dir="dems" inheritall="false"/>
+    </target>
+    
+    <target name="clean" description="">
+        <ant target="clean" dir="dems" inheritall="false"/>
+        <ant target="clean" dir="pdp" inheritall="false"/>
+        <ant target="clean" dir="util" inheritall="false"/>
+    </target>
+</project>

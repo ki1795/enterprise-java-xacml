@@ -1,0 +1,41 @@
+<project name="dems" default="build" basedir=".">
+    <property environment="env"/>
+    <condition property="debug" value="${env.DEBUG}" else="true">
+        <isset property="env.DEBUG"/>
+    </condition>
+    <condition property="optimize" value="${env.OPTIMIZE}" else="false">
+        <isset property="env.OPTIMIZE"/>
+    </condition>
+    <property name="util.jar" value="../util/build/lib/an.util.jar"/>
+    <property name="pdp.jar" value="../pdp/build/lib/an.pdp.jar"/>
+    <property name="functions.jar" value="../pdp/build/lib/an.pdp.functions.jar"/>
+    <property name="dems.jar" value="build/lib/dems.jar"/>
+
+    <target name="prepare">
+        <mkdir dir="build/classes"/>
+        <mkdir dir="build/lib"/>
+    </target>
+
+    <target name="build" depends="prepare">
+        <echo message="Compiling with debug ${debug}"/>
+        <echo message="Compiling with optimize ${optimize}"/>
+
+        <javac debug="${debug}" srcdir="src" optimize="${optimize}" destdir="build/classes">
+            <classpath>
+                <path path="${pdp.jar}"/>
+                <path path="${functions.jar}"/>
+                <path path="${util.jar}"/>
+            </classpath>
+        </javac>
+
+        <jar basedir="build/classes" destfile="${dems.jar}"/>
+    </target>
+
+    <target name="config" description="">
+        <!-- TODO -->
+    </target>
+
+    <target name="clean" description="">
+        <delete dir="build"/>
+    </target>
+</project>

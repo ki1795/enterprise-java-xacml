@@ -1,0 +1,40 @@
+<project name="util" default="build" basedir=".">
+    <property environment="env"/>
+    <condition property="debug" value="${env.DEBUG}" else="true">
+        <isset property="env.DEBUG"/>
+    </condition>
+    <condition property="optimize" value="${env.OPTIMIZE}" else="false">
+        <isset property="env.OPTIMIZE"/>
+    </condition>
+    <property name="log4j.jar" value="${env.AN_HOME}/lib/log4j-1.2.14.jar"/>
+    <property name="util.jar" value="./build/lib/an.util.jar"/>
+
+    <target name="prepare">
+        <mkdir dir="build/classes"/>
+        <mkdir dir="build/lib"/>
+    </target>
+    
+    <target name="build" depends="prepare">
+        <echo message="Compiling with debug ${debug}"/>
+        <echo message="Compiling with optimize ${optimize}"/>
+
+        <javac debug="${debug}" srcdir="src" optimize="${optimize}" destdir="build/classes">
+            <classpath>
+                <path path="${log4j.jar}"/>
+            </classpath>
+        </javac>
+
+        <jar destfile="${util.jar}">
+            <fileset dir="build/classes"/>
+            <fileset dir="../../config" includes="configuration.xsd"/>
+        </jar>
+    </target>
+    
+    <target name="config" description="">
+        <!-- do nothing for util -->
+    </target>
+    
+    <target name="clean" description="">
+        <delete dir="build"/>
+    </target>
+</project>
