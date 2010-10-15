@@ -1,0 +1,49 @@
+<project name="pdpsample" default="build" basedir=".">
+    <property environment="env"/>
+    <condition property="debug" value="${env.DEBUG}" else="true">
+        <isset property="env.DEBUG"/>
+    </condition>
+    <condition property="optimize" value="${env.OPTIMIZE}" else="false">
+        <isset property="env.OPTIMIZE"/>
+    </condition>
+    <property name="util.jar" value="${env.AN_HOME}/components/util/build/lib/an.util.jar"/>
+    <property name="pdp.jar" value="${env.AN_HOME}/components/pdp/build/lib/an.pdp.jar"/>
+    <property name="functions.jar" value="${env.AN_HOME}/components/pdp/build/lib/an.pdp.functions.jar"/>
+
+    <target name="prepare">
+        <mkdir dir="build/classes"/>
+        <mkdir dir="build/config"/>
+		<mkdir dir="build/log"/>
+    </target>
+
+    <target name="build" depends="prepare">
+        <echo message="Compiling with debug ${debug}"/>
+        <echo message="Compiling with optimize ${optimize}"/>
+
+        <javac debug="${debug}" srcdir="src" optimize="${optimize}" destdir="build/classes">
+            <classpath>
+                <path path="${pdp.jar}"/>
+                <path path="${functions.jar}"/>
+                <path path="${util.jar}"/>
+            </classpath>
+        </javac>
+    </target>
+
+    <target name="config" description="">
+        <copy todir="build/config" flatten="true">
+            <fileset dir="config" includes="pdpsample.xml"/>
+            <filterset>
+                <filter token="LOG_DIR" value="${env.AN_HOME}/samples/pdpsample/build/log"/>
+                <filter token="POLICY_DIR" value="${env.AN_HOME}/samples/pdpsample/policy"/>
+            </filterset>
+        </copy>
+        <copy todir="." flatten="true">
+            <fileset dir="config" includes="runsample.bat"/>
+        </copy>
+    </target>
+
+    <target name="clean" description="">
+        <delete dir="build"/>
+    	<delete file="runsample.bat"/>
+    </target>
+</project>
