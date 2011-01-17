@@ -1,0 +1,9 @@
+Refactory notes:
+0.The implementation should based on XML. The XML should come from file or other InputStream.
+1.Refactor the DataAdapter/DataStore interface to return a generic PolicySet/Policy element or other objects. Also need refactory related FileDataAdapter.
+2.Move evaluation logic from Policy/Expression/Other policy elements to specific evaluators.
+3.Refactory engine classes, make the flow clearly. Such as refactor the context factory and so on.
+	a.Context should be an interface, then we can provide different impls while we run the PDP in different environments. Context is using to carry XACML Request/Attributes/Services provided by environments.
+	b.Request/Response should has original XML document, if no, we should have ability to build one from scratch.
+4.Create a branch to save the refactory codes.
+5.Maintain the 2 braches, also need fix bug on the original branch.
