@@ -1,0 +1,25 @@
+plug-ins
+
+1.web plugin(Java)
+2.web plugin(CGI)
+3.JEE plugin(includes java web plugin?)
+4..net plugin
+
+
+a resource model
+
+AAA (ATN/ATZ/Auditing)
+
+
+One of the important thing that need to be considered is, how to design an identity (user, group and so on)
+management system that has ability to manage millions of identities, and allow 20 thousands of sessions.
+
+Following are some capacity requirements for the system,
+
+[Management]
+identities                    : 1,000,000
+resources                     :    20,000
+
+[Runtime]
+sessions (ATN or (ATN & ATZ)) :    20,000
+policies                      :    20,000

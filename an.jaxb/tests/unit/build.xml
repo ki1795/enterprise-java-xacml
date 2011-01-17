@@ -1,0 +1,45 @@
+<project name="unit" default="build" basedir=".">
+    <property environment="env"/>
+    <condition property="debug" value="${env.DEBUG}" else="true">
+        <isset property="env.DEBUG"/>
+    </condition>
+    <condition property="optimize" value="${env.OPTIMIZE}" else="false">
+        <isset property="env.OPTIMIZE"/>
+    </condition>
+    <property name="junit.jar" value="${env.AN_HOME}/tools/junit4/junit.jar"/>
+    <property name="log4j.jar" value="${env.AN_HOME}/lib/log4j-1.2.14.jar"/>
+    <property name="util.jar" value="../../components/util/build/lib/an.util.jar"/>
+    <property name="pdp.jar" value="../../components/pdp/build/lib/an.pdp.jar"/>
+    <property name="functions.jar" value="../../components/pdp/build/lib/an.pdp.functions.jar"/>
+
+    <target name="prepare">
+        <mkdir dir="build/classes"/>
+        <mkdir dir="build/lib"/>
+    </target>
+
+    <target name="build" depends="prepare">
+        <echo message="Compiling with debug ${debug}"/>
+        <echo message="Compiling with optimize ${optimize}"/>
+
+        <javac debug="${debug}" srcdir="src" optimize="${optimize}" destdir="build/classes">
+            <classpath>
+                <path path="${junit.jar}"/>
+                <path path="${pdp.jar}"/>
+                <path path="${functions.jar}"/>
+                <path path="${util.jar}"/>
+            </classpath>
+        </javac>
+    </target>
+
+    <target name="config" description="">
+        <!-- TODO -->
+    </target>
+
+    <target name="test" depends="build,config">
+        <!-- TODO -->
+    </target>
+
+    <target name="clean" description="">
+        <delete dir="build"/>
+    </target>
+</project>

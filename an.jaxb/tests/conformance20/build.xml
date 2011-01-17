@@ -1,0 +1,75 @@
+<project name="conformance20" default="build" basedir=".">
+    <property environment="env"/>
+    <condition property="debug" value="${env.DEBUG}" else="true">
+        <isset property="env.DEBUG"/>
+    </condition>
+    <condition property="optimize" value="${env.OPTIMIZE}" else="false">
+        <isset property="env.OPTIMIZE"/>
+    </condition>
+    <property name="log4j.jar" value="${env.AN_HOME}/lib/log4j-1.2.14.jar"/>
+    <property name="util.jar" value="${env.AN_HOME}/components/util/build/lib/an.util.jar"/>
+    <property name="pdp.jar" value="${env.AN_HOME}/components/pdp/build/lib/an.pdp.jar"/>
+    <property name="functions.jar" value="${env.AN_HOME}/components/pdp/build/lib/an.pdp.functions.jar"/>
+    <property name="unit" value="${env.AN_HOME}/tests/unit/build/classes"/>
+
+    <target name="prepare">
+        <mkdir dir="build/classes"/>
+        <mkdir dir="build/config"/>
+        <mkdir dir="build/log"/>
+    	<mkdir dir="build/reports"/>
+    </target>
+
+    <target name="build" depends="prepare">
+        <echo message="Compiling with debug ${debug}"/>
+        <echo message="Compiling with optimize ${optimize}"/>
+
+        <javac debug="${debug}" srcdir="src" optimize="${optimize}" destdir="build/classes">
+            <classpath>
+                <path path="${pdp.jar}"/>
+                <path path="${functions.jar}"/>
+                <path path="${util.jar}"/>
+                <path path="${unit}"/>
+            </classpath>
+        </javac>
+    </target>
+
+    <target name="config" description="">
+        <copy todir="build/config" flatten="true">
+            <fileset dir="config"/>
+            <filterset>
+                <filter token="CONFIGURATION_XSD" value="${env.AN_HOME}/config/configuration.xsd"/>
+                <filter token="LOG_DIR" value="${env.AN_HOME}/tests/conformance20/build/log"/>
+                <filter token="POLICY_DIR" value="${env.AN_HOME}/tests/data"/>
+            </filterset>
+        </copy>
+    </target>
+
+    <target name="test" depends="build,config">
+        <junit fork="true" printsummary="on" haltonerror="true" haltonfailure="true" showoutput="true">
+        	<jvmarg value="-Dan.xacml.policy.DefaultSchema=xacml-2.0-policy.xsd"/>
+        	<jvmarg value="-Dan.xacml.context.DefaultSchema=xacml-2.0-context.xsd"/>
+        	<jvmarg value="-Dan.xml.DocumentBuilderFactory.forceSUN"/>
+            <classpath>
+                <path path="${pdp.jar}"/>
+                <path path="${functions.jar}"/>
+                <path path="${util.jar}"/>
+                <path path="${unit}"/>
+                <path path="./build/classes"/>
+            	<path path="./build/config"/>
+            	<path path="${env.AN_HOME}/config"/>
+            </classpath>
+            <test name="tests.an.xacml.conformance20.ConformanceTest"/>
+        </junit>
+
+    	<!--junitreport todir="./build/reports">
+    	    <fileset dir="./build/reports">
+    	        <include name="TEST-*.xml"/>
+    	    </fileset>
+    	    <report format="frames" todir="./build/report/html"/>
+    	</junitreport-->
+    </target>
+
+    <target name="clean" description="">
+        <delete dir="build"/>
+    </target>
+</project>

@@ -1,0 +1,3 @@
+call ../../env.bat
+
+"%JAVA_HOME%/bin/java.exe" -Dan.xacml.context.DefaultSchema=xacml-2.0-context.xsd -Dan.xacml.policy.DefaultSchema=xacml-2.0-policy.xsd -Dan.xml.DocumentBuilderFactory.forceSUN -classpath %AN_HOME%/build/lib/an.pdp.jar;%AN_HOME%/build/lib/an.util.jar;%AN_HOME%/build/lib/an.pdp.functions.jar;./build/classes an.example.PDPSample -configFile %AN_HOME%/samples/pdpsample/build/config/pdpsample.xml -request %AN_HOME%/samples/pdpsample/request/IIA001Request.xml

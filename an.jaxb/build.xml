@@ -1,0 +1,47 @@
+<project name="an" default="build" basedir=".">
+    <!-- Determine compile source code with debug option or not -->
+    <property environment="env"/>
+    <condition property="debug" value="${env.DEBUG}" else="true">
+        <isset property="env.DEBUG"/>
+    </condition>
+    <condition property="optimize" value="${env.OPTIMIZE}" else="false">
+        <isset property="env.OPTIMIZE"/>
+    </condition>
+    <property name="util.jar" value="components/util/build/lib/an.util.jar"/>
+    <property name="pdp.jar" value="components/pdp/build/lib/an.pdp.jar"/>
+    <property name="functions.jar" value="components/pdp/build/lib/an.pdp.functions.jar"/>
+    <property name="dems.jar" value="components/dems/build/lib/dems.jar"/>
+
+    <target name="prepare">
+        <mkdir dir="build/lib"/>
+    </target>
+
+    <target name="build" depends="prepare">
+		<ant target="build" dir="components" inheritall="false"/>
+		<ant target="build" dir="tests" inheritall="false"/>
+
+        <copy todir="build/lib" overwrite="true" file="${util.jar}"/>
+        <copy todir="build/lib" overwrite="true" file="${pdp.jar}"/>
+        <copy todir="build/lib" overwrite="true" file="${functions.jar}"/>
+        <copy todir="build/lib" overwrite="true" file="${dems.jar}"/>
+	</target>
+
+    <target name="config" description="">
+        <ant target="config" dir="components" inheritall="false"/>
+        <ant target="config" dir="tests" inheritall="false"/>
+    </target>
+
+    <target name="clean" description="">
+        <ant target="clean" dir="components" inheritall="false"/>
+        <ant target="clean" dir="tests" inheritall="false"/>
+        <delete dir="build"/>
+    </target>
+
+    <target name="conformance-test">
+        <ant target="test" dir="tests/conformance20" inheritall="false"/>
+    </target>
+
+    <target name="indexing-test">
+        <ant target="test" dir="tests/indexing" inheritall="false"/>
+    </target>
+</project>
