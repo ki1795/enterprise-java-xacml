@@ -5,11 +5,12 @@ import java.util.Map;
 
 import org.w3c.dom.Element;
 
+import deprecated.an.xacml.policy.AttributeValue;
+
 import an.config.ConfigElement;
 import an.xacml.IndeterminateException;
-import an.xacml.engine.AttributeRetriever;
-import an.xacml.engine.EvaluationContext;
-import an.xacml.policy.AttributeValue;
+import an.xacml.engine.ctx.AttributeRetriever;
+import an.xacml.engine.ctx.EvaluationContext;
 import an.xml.XMLDataTypeMappingException;
 
 public class IIA002AttributeRetriever implements AttributeRetriever {

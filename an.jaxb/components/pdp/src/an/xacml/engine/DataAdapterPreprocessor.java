@@ -3,12 +3,13 @@ package an.xacml.engine;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import deprecated.an.xacml.policy.AbstractPolicy;
+import deprecated.an.xacml.policy.IdReference;
+import deprecated.an.xacml.policy.PolicySet;
+import deprecateed.an.xacml.adapter.DataAdapter;
+
 import an.xacml.PolicySyntaxException;
 import an.xacml.XACMLElement;
-import an.xacml.adapter.DataAdapter;
-import an.xacml.policy.AbstractPolicy;
-import an.xacml.policy.IdReference;
-import an.xacml.policy.PolicySet;
 
 /**
  * This class is used to preprocess data adapters that loaded from underlying data store. Currently it in charge of

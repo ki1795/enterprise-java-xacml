@@ -1,6 +1,6 @@
 package an.xacml.engine;
 
-import static an.xacml.adapter.file.XMLFileDataAdapterRegistry.getPolicyDataAdapterClassByXACMLElementType;
+import static deprecateed.an.xacml.adapter.file.XMLFileDataAdapterRegistry.getPolicyDataAdapterClassByXACMLElementType;
 
 import java.lang.reflect.Constructor;
 import java.net.URI;
@@ -8,15 +8,18 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
+import deprecated.an.xacml.context.Request;
+import deprecated.an.xacml.context.Result;
+import deprecated.an.xacml.policy.AbstractPolicy;
+import deprecateed.an.xacml.adapter.DataAdapter;
+import deprecateed.an.xacml.adapter.DataAdapterException;
+
 
 import an.config.ConfigElement;
 import an.xacml.IndeterminateException;
 import an.xacml.XACMLElement;
-import an.xacml.adapter.DataAdapter;
-import an.xacml.adapter.DataAdapterException;
-import an.xacml.context.Request;
-import an.xacml.context.Result;
-import an.xacml.policy.AbstractPolicy;
+import an.xacml.engine.ctx.EvaluationContext;
+import an.xacml.engine.ctx.EvaluationResultCache;
 import an.xml.XMLGeneralException;
 
 /**
@@ -225,10 +228,6 @@ public class CacheManager {
 
         public Result evaluate(EvaluationContext ctx) throws IndeterminateException {
             throw new UnsupportedOperationException("We don't support evaluate operation on this class.");
-        }
-
-        protected void mergeTargets() {
-            throw new UnsupportedOperationException("We don't support mergeTargets operation on this class.");
         }
     }
 }

@@ -1,6 +1,6 @@
 package an.xacml;
 
-import an.xacml.engine.EvaluationContext;
+import an.xacml.engine.ctx.EvaluationContext;
 
 /**
  * All elements, included in Target element, PolicySet, Policy and Rule should implement the interface.

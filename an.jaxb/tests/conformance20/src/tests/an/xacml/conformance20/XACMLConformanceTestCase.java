@@ -1,20 +1,21 @@
 package tests.an.xacml.conformance20;
 
-import static an.xacml.adapter.file.XACMLParser.parseRequest;
-import static an.xacml.adapter.file.XACMLParser.parseResponse;
+import static deprecateed.an.xacml.adapter.file.XACMLParser.parseRequest;
+import static deprecateed.an.xacml.adapter.file.XACMLParser.parseResponse;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 
+import deprecated.an.xacml.context.Request;
+import deprecated.an.xacml.context.Response;
+import deprecateed.an.xacml.adapter.file.XACMLParser;
+import deprecateed.an.xacml.adapter.file.XMLFileDataStore;
+
 import an.config.ConfigElement;
 import an.config.Configuration;
 import an.log.LogFactory;
 import an.log.Logger;
-import an.xacml.adapter.file.XACMLParser;
-import an.xacml.adapter.file.XMLFileDataStore;
-import an.xacml.context.Request;
-import an.xacml.context.Response;
 import an.xacml.engine.PDP;
 
 public class XACMLConformanceTestCase {

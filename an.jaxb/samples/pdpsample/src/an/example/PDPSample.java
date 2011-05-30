@@ -4,20 +4,21 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 
+import deprecated.an.xacml.context.Request;
+import deprecated.an.xacml.context.Response;
+import deprecated.an.xacml.context.Result;
+import deprecated.an.xacml.policy.AbstractPolicy;
+import deprecateed.an.xacml.adapter.file.XACMLParser;
+import deprecateed.an.xacml.adapter.file.XMLFileDataStore;
+
 import an.config.ConfigElement;
 import an.config.Configuration;
 import an.log.LogFactory;
 import an.log.Logger;
 import an.util.CommandLineArguments;
 import an.util.InvalidCommandLineArgumentException;
-import an.xacml.adapter.file.XACMLParser;
-import an.xacml.adapter.file.XMLFileDataStore;
-import an.xacml.context.Request;
-import an.xacml.context.Response;
-import an.xacml.context.Result;
-import an.xacml.engine.EvaluationContext;
 import an.xacml.engine.PDP;
-import an.xacml.policy.AbstractPolicy;
+import an.xacml.engine.ctx.EvaluationContext;
 
 public class PDPSample {
     private PDP pdp;

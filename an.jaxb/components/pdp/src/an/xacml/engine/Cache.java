@@ -15,6 +15,16 @@ import an.config.ConfigElement;
 import an.log.LogFactory;
 import an.log.Logger;
 
+/**
+ * @TODO
+ * Cache should be implemented as a generic object cache. Each object added to the cache should be wrapped as a
+ * cachable object (which could provide cache related attribute like added time, etc). No external cachable interface
+ * is needed.
+ * And also the cache algorithm could be defined externally and configurable. Whenever we need to improve the
+ * performance against specific XACML elements (resource or role), we could leverage by configuration.
+ * @author roy
+ *
+ */
 public abstract class Cache {
     public static final String ATTR_CACHE_SIZE = "size";
     public static final String ATTR_CACHE_EXPIREINTERVAL = "expireInterval";

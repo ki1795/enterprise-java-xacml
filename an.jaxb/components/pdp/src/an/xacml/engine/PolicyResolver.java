@@ -2,7 +2,8 @@ package an.xacml.engine;
 
 import java.net.URI;
 
-import an.xacml.policy.AbstractPolicy;
+import deprecated.an.xacml.policy.AbstractPolicy;
+
 
 /**
  * This interface defined a policy resolver that can retrieve a policy by given id, or can return all policies this

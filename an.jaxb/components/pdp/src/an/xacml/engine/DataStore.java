@@ -1,7 +1,7 @@
 package an.xacml.engine;
 
-import an.xacml.adapter.DataAdapter;
-import an.xacml.adapter.DataAdapterException;
+import deprecateed.an.xacml.adapter.DataAdapter;
+import deprecateed.an.xacml.adapter.DataAdapterException;
 
 /**
  * A factory class that used to load policies from specific data store.

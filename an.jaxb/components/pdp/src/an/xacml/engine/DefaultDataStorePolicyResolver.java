@@ -4,8 +4,9 @@ import java.net.URI;
 import java.util.Hashtable;
 import java.util.Map;
 
+import deprecated.an.xacml.policy.AbstractPolicy;
+
 import an.config.ConfigElement;
-import an.xacml.policy.AbstractPolicy;
 
 public class DefaultDataStorePolicyResolver implements PolicyResolver {
     private Map<URI, AbstractPolicy> policies = new Hashtable<URI, AbstractPolicy>();

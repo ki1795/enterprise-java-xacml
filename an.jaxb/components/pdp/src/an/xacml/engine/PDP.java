@@ -12,6 +12,11 @@ import java.net.URI;
 import java.util.Hashtable;
 import java.util.Map;
 
+import deprecated.an.xacml.context.Result;
+import deprecated.an.xacml.policy.AbstractPolicy;
+import deprecateed.an.xacml.adapter.DataAdapter;
+import deprecateed.an.xacml.adapter.DataAdapterException;
+
 import an.config.ConfigElement;
 import an.config.ConfigurationException;
 import an.control.AbstractMonitorableAndControllable;
@@ -22,11 +27,13 @@ import an.xacml.Constants;
 import an.xacml.IndeterminateException;
 import an.xacml.PolicySyntaxException;
 import an.xacml.Version;
-import an.xacml.adapter.DataAdapter;
-import an.xacml.adapter.DataAdapterException;
-import an.xacml.context.Result;
-import an.xacml.policy.AbstractPolicy;
-import an.xacml.policy.function.BuiltInFunction;
+import an.xacml.engine.ctx.AttributeRetrieverRegistry;
+import an.xacml.engine.ctx.ContextFactory;
+import an.xacml.engine.ctx.ContextFactoryHelper;
+import an.xacml.engine.ctx.ContextHandler;
+import an.xacml.engine.ctx.EvaluationContext;
+import an.xacml.engine.ctx.FunctionRegistry;
+import an.xacml.function.BuiltInFunction;
 import an.xml.XMLGeneralException;
 
 /**

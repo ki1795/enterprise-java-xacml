@@ -8,14 +8,15 @@ import javax.naming.ldap.LdapName;
 import javax.xml.datatype.Duration;
 import javax.xml.namespace.QName;
 
+import deprecated.an.xacml.policy.Effect;
+import deprecated.an.xacml.policy.Version;
+import deprecated.an.xacml.policy.VersionMatch;
+
 import an.datatype.base64Binary;
 import an.datatype.dnsName;
 import an.datatype.hexBinary;
 import an.datatype.ipAddress;
 import an.datatype.rfc822Name;
-import an.xacml.policy.Effect;
-import an.xacml.policy.Version;
-import an.xacml.policy.VersionMatch;
 
 /**
  * Provide a default getVersion implementation.

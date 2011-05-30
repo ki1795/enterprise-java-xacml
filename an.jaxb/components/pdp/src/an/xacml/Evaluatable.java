@@ -1,7 +1,7 @@
 package an.xacml;
 
-import an.xacml.context.Result;
-import an.xacml.engine.EvaluationContext;
+import deprecated.an.xacml.context.Result;
+import an.xacml.engine.ctx.EvaluationContext;
 
 /**
  * All evaluatable, PolicySet, Policy and Rule, must implement the interface.

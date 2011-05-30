@@ -11,24 +11,28 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import deprecated.an.xacml.context.Attribute;
+import deprecated.an.xacml.context.Request;
+import deprecated.an.xacml.context.TargetElement;
+import deprecated.an.xacml.policy.AbstractPolicy;
+import deprecated.an.xacml.policy.AttributeDesignator;
+import deprecated.an.xacml.policy.AttributeValue;
+import deprecated.an.xacml.policy.ConjunctiveMatch;
+import deprecated.an.xacml.policy.DefaultMatch;
+import deprecated.an.xacml.policy.DisjunctiveMatch;
+import deprecated.an.xacml.policy.Target;
+
 import an.config.ConfigElement;
 import an.log.LogFactory;
 import an.log.Logger;
 import an.xacml.Expression;
 import an.xacml.IndeterminateException;
 import an.xacml.Matchable;
-import an.xacml.context.Attribute;
-import an.xacml.context.Request;
-import an.xacml.context.TargetElement;
-import an.xacml.policy.AbstractPolicy;
-import an.xacml.policy.AttributeDesignator;
-import an.xacml.policy.AttributeValue;
-import an.xacml.policy.ConjunctiveMatch;
-import an.xacml.policy.DefaultMatch;
-import an.xacml.policy.DisjunctiveMatch;
-import an.xacml.policy.Target;
-import an.xacml.policy.function.BuiltInFunction;
-import an.xacml.policy.function.EquivalentFunction;
+import an.xacml.engine.ctx.AttributeRetriever;
+import an.xacml.engine.ctx.AttributeRetrieverRegistry;
+import an.xacml.engine.ctx.FunctionRegistry;
+import an.xacml.function.BuiltInFunction;
+import an.xacml.function.EquivalentFunction;
 
 /**
  * This class is used to cache polices.

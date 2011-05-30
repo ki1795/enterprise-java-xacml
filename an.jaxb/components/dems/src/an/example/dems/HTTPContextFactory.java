@@ -1,12 +1,12 @@
 package an.example.dems;
 
+import deprecated.an.xacml.context.Request;
+import deprecated.an.xacml.context.Response;
 import an.config.ConfigElement;
-import an.xacml.context.Request;
-import an.xacml.context.Response;
-import an.xacml.engine.ContextFactory;
-import an.xacml.engine.ContextFactoryHelper;
-import an.xacml.engine.ContextHandler;
-import an.xacml.engine.DefaultContextHandler;
+import an.xacml.engine.ctx.ContextFactory;
+import an.xacml.engine.ctx.ContextFactoryHelper;
+import an.xacml.engine.ctx.ContextHandler;
+import an.xacml.engine.ctx.DefaultContextHandler;
 
 public class HTTPContextFactory implements ContextFactory {
     private ContextHandler ctxHandler;

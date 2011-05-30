@@ -1,6 +1,6 @@
 package an.xacml;
 
-import an.xacml.engine.EvaluationContext;
+import an.xacml.engine.ctx.EvaluationContext;
 
 /**
  * Expression is to evaluate something, and then get the result. The evaluate method is intend to do this.

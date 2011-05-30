@@ -1,6 +1,6 @@
 package tests.an.xacml.indexing;
 
-import static an.xacml.adapter.file.XACMLParser.parseRequest;
+import static deprecateed.an.xacml.adapter.file.XACMLParser.parseRequest;
 import static org.junit.Assert.assertTrue;
 import static tests.an.xacml.util.TestUtil.getFileFromClassPath;
 
@@ -16,6 +16,10 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import deprecated.an.xacml.context.Request;
+import deprecated.an.xacml.policy.AbstractPolicy;
+import deprecateed.an.xacml.adapter.file.XMLFileDataStore;
+
 import an.config.ConfigElement;
 import an.config.Configuration;
 import an.config.ConfigurationException;
@@ -24,13 +28,10 @@ import an.log.LogFactory;
 import an.log.LogInitializationException;
 import an.log.Logger;
 import an.xacml.IndeterminateException;
-import an.xacml.adapter.file.XMLFileDataStore;
-import an.xacml.context.Request;
 import an.xacml.engine.CacheManager;
-import an.xacml.engine.EvaluationContext;
 import an.xacml.engine.PDP;
 import an.xacml.engine.PDPInitializeException;
-import an.xacml.policy.AbstractPolicy;
+import an.xacml.engine.ctx.EvaluationContext;
 import an.xml.XMLGeneralException;
 
 /**

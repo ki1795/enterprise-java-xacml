@@ -306,5 +306,5 @@ public abstract interface Constants {
     public static final URI FUNC_RFC822NAME_SUBSET = URI.create("urn:oasis:names:tc:xacml:1.0:function:rfc822Name-subset");
     public static final URI FUNC_RFC822NAME_SET_EQUALS = URI.create("urn:oasis:names:tc:xacml:1.0:function:rfc822Name-set-equals");
 
-    public static final an.xacml.policy.Version POLICY_DEFAULT_VERSION = new an.xacml.policy.Version("1.0");
+    public static final deprecated.an.xacml.policy.Version POLICY_DEFAULT_VERSION = new deprecated.an.xacml.policy.Version("1.0");
 }
