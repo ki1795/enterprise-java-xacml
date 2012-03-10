@@ -11,12 +11,12 @@ import an.log.LogFactory;
 import an.log.Logger;
 import an.xacml.Evaluatable;
 import an.xacml.IndeterminateException;
-import an.xacml.Matchable;
 import an.xacml.engine.DefaultCacheable;
 import an.xacml.engine.PDP;
 import an.xacml.engine.ctx.EvaluationContext;
+import an.xacml.engine.evaluator.Matcher;
 
-public abstract class AbstractPolicy extends DefaultCacheable implements Evaluatable, Matchable {
+public abstract class AbstractPolicy extends DefaultCacheable implements Evaluatable, Matcher {
     /**
      * The property intends to provider namespace mapping for XPath evaluation.  The value actually is a map that 
      * includes all attributes in Policy or PolicySet element and with "xmlns:" in attribute name.  For example, if a 

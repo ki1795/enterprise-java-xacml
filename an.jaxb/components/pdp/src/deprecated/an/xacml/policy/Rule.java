@@ -6,10 +6,10 @@ import an.xacml.Constants;
 import an.xacml.DefaultXACMLElement;
 import an.xacml.Evaluatable;
 import an.xacml.IndeterminateException;
-import an.xacml.Matchable;
 import an.xacml.engine.ctx.EvaluationContext;
+import an.xacml.engine.evaluator.Matcher;
 
-public class Rule extends DefaultXACMLElement implements Evaluatable, Matchable {
+public class Rule extends DefaultXACMLElement implements Evaluatable, Matcher {
     private String ruleId;
     private Effect effect;
     private String description;

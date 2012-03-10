@@ -1,6 +1,8 @@
 package deprecated.an.xacml.policy;
 
-public class Environments extends DisjunctiveMatch {
+import an.xacml.engine.evaluator.TargetsMatcher;
+
+public class Environments extends TargetsMatcher {
     private Environment[] environments;
     public Environments(Environment[] environments) {
         if (environments == null || environments.length < 1) {

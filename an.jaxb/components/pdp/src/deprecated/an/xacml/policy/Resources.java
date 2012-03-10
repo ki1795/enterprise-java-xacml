@@ -1,6 +1,8 @@
 package deprecated.an.xacml.policy;
 
-public class Resources extends DisjunctiveMatch {
+import an.xacml.engine.evaluator.TargetsMatcher;
+
+public class Resources extends TargetsMatcher {
     private Resource[] resources;
     public Resources(Resource[] resources) {
         if (resources == null || resources.length < 1) {

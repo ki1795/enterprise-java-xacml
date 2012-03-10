@@ -1,6 +1,8 @@
 package deprecated.an.xacml.policy;
 
-public class Resource extends ConjunctiveMatch {
+import an.xacml.engine.evaluator.TargetMatcher;
+
+public class Resource extends TargetMatcher {
     private ResourceMatch[] resourceMatches;
 
     public Resource(ResourceMatch[] resourceMatches) {

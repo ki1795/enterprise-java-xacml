@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.net.URI;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -27,7 +26,7 @@ import an.xml.XMLGeneralException;
 public class FunctionRegistry {
     public static String XACML_FUNCTION_PACKAGE = "an.xacml.policy.function";
     private static FunctionRegistry functionReg;
-    private Map<URI, BuiltInFunction> functions = new HashMap<URI, BuiltInFunction>();
+    private Map<String, BuiltInFunction> functions = new HashMap<String, BuiltInFunction>();
     private Logger logger;
 
     private FunctionRegistry() throws IOException, ClassNotFoundException, BuiltInFunctionExistsException {
@@ -92,18 +91,17 @@ public class FunctionRegistry {
                                 }
                             }
 
-                            for (String funcName : funcNames) {
+                            for (final String funcName : funcNames) {
                                 if (funcName != null && funcName.trim().length() > 0) {
-                                    final URI functionId = new URI(funcName);
 
-                                    if (functions.get(functionId) != null) {
+                                    if (functions.get(funcName) != null) {
                                         throw new BuiltInFunctionExistsException("The built-in function '" + 
-                                                functionId + "' has been registered.");
+                                                funcName + "' has been registered.");
                                     }
 
                                     BuiltInFunction function = new BuiltInFunction() {
-                                        public URI getFunctionId() {
-                                            return functionId;
+                                        public String getFunctionId() {
+                                            return funcName;
                                         }
 
                                         public Object invoke(EvaluationContext ctx, Object[] params)
@@ -145,7 +143,7 @@ public class FunctionRegistry {
         return unregister(function.getFunctionId());
     }
 
-    public BuiltInFunction unregister(URI funcId) throws BuiltInFunctionNotFoundException {
+    public BuiltInFunction unregister(String funcId) throws BuiltInFunctionNotFoundException {
         BuiltInFunction willRemove = lookup(funcId);
         if (willRemove != null) {
             functions.remove(funcId);
@@ -157,7 +155,7 @@ public class FunctionRegistry {
         functions.clear();
     }
 
-    public BuiltInFunction lookup(URI funcId) throws BuiltInFunctionNotFoundException {
+    public BuiltInFunction lookup(String funcId) throws BuiltInFunctionNotFoundException {
         BuiltInFunction func = functions.get(funcId);
         if (func == null) {
             throw new BuiltInFunctionNotFoundException("The built-in function " + funcId +

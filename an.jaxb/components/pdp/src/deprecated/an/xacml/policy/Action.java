@@ -1,6 +1,8 @@
 package deprecated.an.xacml.policy;
 
-public class Action extends ConjunctiveMatch {
+import an.xacml.engine.evaluator.TargetMatcher;
+
+public class Action extends TargetMatcher {
     private ActionMatch[] actionMatches;
 
     public Action(ActionMatch[] actionMatches) {

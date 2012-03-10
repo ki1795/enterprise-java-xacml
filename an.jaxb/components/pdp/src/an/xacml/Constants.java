@@ -44,13 +44,13 @@ public abstract interface Constants {
     public static final URI ALG_POLICY_ORDEREDDENYOVERRIDES = URI.create("urn:oasis:names:tc:xacml:1.1:policy-combining-algorithm:ordered-deny-overrides");
     public static final URI ALG_POLICY_ORDEREDPERMITOVERRIDES = URI.create("urn:oasis:names:tc:xacml:1.1:policy-combining-algorithm:ordered-permit-overrides");
     // The status code defined by XACML 2.0
-    public static final URI STATUS_OK = URI.create("urn:oasis:names:tc:xacml:1.0:status:ok");
-    public static final URI STATUS_MISSINGATTRIBUTE = URI.create("urn:oasis:names:tc:xacml:1.0:status:missing-attribute");
-    public static final URI STATUS_SYNTAXERROR = URI.create("urn:oasis:names:tc:xacml:1.0:status:syntax-error");
-    public static final URI STATUS_PROCESSINGERROR = URI.create("urn:oasis:names:tc:xacml:1.0:status:processing-error");
+    public static final String STATUS_OK = "urn:oasis:names:tc:xacml:1.0:status:ok";
+    public static final String STATUS_MISSINGATTRIBUTE = "urn:oasis:names:tc:xacml:1.0:status:missing-attribute";
+    public static final String STATUS_SYNTAXERROR = "urn:oasis:names:tc:xacml:1.0:status:syntax-error";
+    public static final String STATUS_PROCESSINGERROR = "urn:oasis:names:tc:xacml:1.0:status:processing-error";
     // The custom status code
-    public static final URI STATUS_SERVERERROR = URI.create("an:xacml:2.0:status:server-error");
-    public static final URI STATUS_UNKNOWNERROR = URI.create("an:xacml:2.0:status:unknown-error");
+    public static final String STATUS_SERVERERROR = "an:xacml:2.0:status:server-error";
+    public static final String STATUS_UNKNOWNERROR = "an:xacml:2.0:status:unknown-error";
     // Environment attributes
     public static final URI ATTR_TIME = URI.create("urn:oasis:names:tc:xacml:1.0:environment:current-time");
     public static final URI ATTR_DATE = URI.create("urn:oasis:names:tc:xacml:1.0:environment:current-date");
@@ -80,7 +80,7 @@ public abstract interface Constants {
     public static final URI TYPE_DATE = URI.create(XMLDataTypeRegistry.XMLTypeAsString(DATE));
     public static final URI TYPE_DATETIME = URI.create(XMLDataTypeRegistry.XMLTypeAsString(DATETIME));
     public static final URI TYPE_STRING = URI.create("http://www.w3.org/2001/XMLSchema#string");
-    public static final URI TYPE_BOOLEAN = URI.create("http://www.w3.org/2001/XMLSchema#boolean");
+    public static final String TYPE_BOOLEAN = "http://www.w3.org/2001/XMLSchema#boolean";
     public static final URI TYPE_INTEGER = URI.create("http://www.w3.org/2001/XMLSchema#integer");
     public static final URI TYPE_DOUBLE = URI.create("http://www.w3.org/2001/XMLSchema#double");
     public static final URI TYPE_ANYURI = URI.create("http://www.w3.org/2001/XMLSchema#anyURI");

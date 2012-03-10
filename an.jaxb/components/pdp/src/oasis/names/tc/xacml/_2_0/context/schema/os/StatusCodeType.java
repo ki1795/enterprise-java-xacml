@@ -15,6 +15,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
+import an.xacml.Constants;
+
 
 /**
  * <p>Java class for StatusCodeType complex type.
@@ -41,12 +43,33 @@ import javax.xml.bind.annotation.XmlType;
     "statusCode"
 })
 public class StatusCodeType {
+    public static final StatusCodeType EVAL_STATUS_OK = new StatusCodeType(Constants.STATUS_OK, null);
+    public static final StatusCodeType EVAL_STATUS_MISSINGATTRIBUTE = new StatusCodeType(Constants.STATUS_MISSINGATTRIBUTE, null);
+    public static final StatusCodeType EVAL_STATUS_SYNTAXERROR = new StatusCodeType(Constants.STATUS_SYNTAXERROR, null);
+    public static final StatusCodeType EVAL_STATUS_PROCESSINGERROR = new StatusCodeType(Constants.STATUS_PROCESSINGERROR, null);
+    public static final StatusCodeType EVAL_STATUS_SERVERERROR = new StatusCodeType(Constants.STATUS_SERVERERROR, null);
+    public static final StatusCodeType EVAL_STATUS_UNKNOWNERROR = new StatusCodeType(Constants.STATUS_UNKNOWNERROR, null);
 
     @XmlElement(name = "StatusCode", namespace = "urn:oasis:names:tc:xacml:2.0:context:schema:os")
     protected StatusCodeType statusCode;
     @XmlAttribute(name = "Value", required = true)
     @XmlSchemaType(name = "anyURI")
     protected String value;
+
+    /**
+     * Default constructor
+     */
+    public StatusCodeType() {}
+
+    /**
+     * For fast construct the default status code values
+     * @param value
+     * @param child
+     */
+    public StatusCodeType(String value, StatusCodeType child) {
+        this.value = value;
+        this.statusCode = child;
+    }
 
     /**
      * Gets the value of the statusCode property.

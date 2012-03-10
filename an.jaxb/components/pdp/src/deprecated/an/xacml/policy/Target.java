@@ -1,9 +1,11 @@
 package deprecated.an.xacml.policy;
 
 import java.util.Vector;
-import an.xacml.Matchable;
 
-public class Target extends ConjunctiveMatch {
+import an.xacml.engine.evaluator.TargetMatcher;
+import an.xacml.engine.evaluator.Matcher;
+
+public class Target extends TargetMatcher {
     private Subjects subjects;
     private Resources resources;
     private Actions actions;
@@ -13,7 +15,7 @@ public class Target extends ConjunctiveMatch {
      * environments.
      * @param matchables
      */
-    public Target(Matchable[] matchables) {
+    public Target(Matcher[] matchables) {
         matches = matchables;
     }
 
@@ -25,12 +27,12 @@ public class Target extends ConjunctiveMatch {
      * @param envs
      */
     public Target(Subjects subjects, Resources resources, Actions actions, Environments envs) {
-        Vector<Matchable> vMatch = new Vector<Matchable>();
+        Vector<Matcher> vMatch = new Vector<Matcher>();
         if (subjects != null) vMatch.add(subjects);
         if (resources != null) vMatch.add(resources);
         if (actions != null) vMatch.add(actions);
         if (envs != null) vMatch.add(envs);
-        matches = vMatch.toArray(new Matchable[0]);
+        matches = vMatch.toArray(new Matcher[0]);
         this.subjects = subjects;
         this.resources = resources;
         this.actions = actions;

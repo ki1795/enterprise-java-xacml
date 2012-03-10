@@ -8,10 +8,12 @@
 
 package oasis.names.tc.xacml._2_0.policy.schema.os;
 
+import static an.xacml.Constants.TYPE_BOOLEAN;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAnyAttribute;
@@ -20,8 +22,10 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlMixed;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlSeeAlso;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
+
 import org.w3c.dom.Element;
 
 
@@ -55,6 +59,9 @@ import org.w3c.dom.Element;
 })
 public class AttributeValueType {
 
+    public static final AttributeValueType TRUE = new AttributeValueType(TYPE_BOOLEAN, Boolean.TRUE);
+    public static final AttributeValueType FALSE = new AttributeValueType(TYPE_BOOLEAN, Boolean.TRUE);
+
     @XmlMixed
     @XmlAnyElement(lax = true)
     protected List<Object> content;
@@ -63,6 +70,35 @@ public class AttributeValueType {
     protected String dataType;
     @XmlAnyAttribute
     private Map<QName, String> otherAttributes = new HashMap<QName, String>();
+
+    /**
+     * The typed value represents the corresponding Java typed attribute value. It should be the final evaluated
+     * value, regardless it has child expression or not. This typed value field will not be serialized to XML document,
+     * it's designed for keep the evaluation result w/o modify the original content of the XML element.
+     * 
+     * Users should use getContent() method to get original document or add contents to it to write policy back to
+     * document.
+     * 
+     * Defined it as transient to prevent JAXB map it to XML document.
+     */
+    @XmlTransient
+    private Object typedValue;
+
+    /**
+     * The default constructor
+     * FIXME can we set it as packaged? could it impact the JAXB XML-Object loading/mapping?
+     */
+    /* packaged */ AttributeValueType() {}
+
+    /**
+     * The convenient constructor for the TRUE/FALSE constants.
+     * @param dataType
+     * @param value
+     */
+    /* packaged */ AttributeValueType(String dataType, Object value) {
+        this.dataType = dataType;
+        this.typedValue = value;
+    }
 
     /**
      * Gets the value of the content property.
@@ -137,4 +173,19 @@ public class AttributeValueType {
         return otherAttributes;
     }
 
+    /**
+     * We only provided a getter because it's the evaluation result, not the original content.
+     * @return
+     */
+    public Object getTypedValue() {
+        return typedValue;
+    }
+
+    /**
+     * Internally used. Set the evaluation result.
+     * @param typedValue
+     */
+    /* packaged */ void setTypedValue(Object typedValue) {
+        this.typedValue = typedValue;
+    }
 }

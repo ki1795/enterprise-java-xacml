@@ -27,6 +27,11 @@ import an.xacml.IndeterminateException;
  * Since attribute retrievers are registed in a hash set, all implementation should implement hashCode and equals
  * method.
  * 
+ * @TODO - should not disable AttributeRetriever when caching policies.
+ * While the policies are cached for performance consideration, AttributeRetriever implementation should take care of
+ * attributes cache. Otherwise, it will not be benefited from the policy cache mechanism. It's AttributeRetriever
+ * developer's responsible to implement the attribute's cache.
+ * 
  * @TODO
  * AttributeRetriever should be disabled where the strict audit policy is enforced, because the attributes get from
  * attributeRetriever may not be re-get after many years later.

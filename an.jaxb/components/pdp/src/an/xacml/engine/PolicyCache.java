@@ -17,9 +17,6 @@ import deprecated.an.xacml.context.TargetElement;
 import deprecated.an.xacml.policy.AbstractPolicy;
 import deprecated.an.xacml.policy.AttributeDesignator;
 import deprecated.an.xacml.policy.AttributeValue;
-import deprecated.an.xacml.policy.ConjunctiveMatch;
-import deprecated.an.xacml.policy.DefaultMatch;
-import deprecated.an.xacml.policy.DisjunctiveMatch;
 import deprecated.an.xacml.policy.Target;
 
 import an.config.ConfigElement;
@@ -27,10 +24,13 @@ import an.log.LogFactory;
 import an.log.Logger;
 import an.xacml.Expression;
 import an.xacml.IndeterminateException;
-import an.xacml.Matchable;
 import an.xacml.engine.ctx.AttributeRetriever;
 import an.xacml.engine.ctx.AttributeRetrieverRegistry;
 import an.xacml.engine.ctx.FunctionRegistry;
+import an.xacml.engine.evaluator.TargetMatcher;
+import an.xacml.engine.evaluator.TargetMatchMatcher;
+import an.xacml.engine.evaluator.TargetsMatcher;
+import an.xacml.engine.evaluator.Matcher;
 import an.xacml.function.BuiltInFunction;
 import an.xacml.function.EquivalentFunction;
 
@@ -66,6 +66,12 @@ public class PolicyCache extends Cache {
         }
     }
 
+    /**
+     * FIXME should we define an annotation for the pre-defined functions that could make those functions be optimized
+     * for the indexing mechanism?
+     * @param request
+     * @return
+     */
     public AbstractPolicy[] get(Request request) {
         try {
             readLock();
@@ -173,22 +179,22 @@ public class PolicyCache extends Cache {
         AttributeRetriever[] allAttrRetrs = AttributeRetrieverRegistry.getInstance(pdp).getAllAttributeRetrievers();
         Target target = policy.getTarget();
 
-        List<DisjunctiveMatch> targetElems = getElementsFromTarget(target);
+        List<TargetsMatcher> targetElems = getElementsFromTarget(target);
         // loop in Subjects, Actions, Resources and Environments to get child Subject[], Action[], Resource[] and
         // Environment[].
-        for (DisjunctiveMatch dMatch : targetElems) {
-            Matchable[] cMatches = dMatch.getMatchables();
+        for (TargetsMatcher dMatch : targetElems) {
+            Matcher[] cMatches = dMatch.getMatchables();
             if (cMatches != null && cMatches.length > 0) {
                 // loop in each Subject, Action, Resource and Environment to get child SubjectMatch, ActionMatch,
                 // ResourceMatch and EnvironmentMatch.
                 for (int i = 0; i < cMatches.length; i ++) {
-                    ConjunctiveMatch cMatch = (ConjunctiveMatch)cMatches[i];
-                    Matchable[] defaultMatches = cMatch.getMatchables();
+                    TargetMatcher cMatch = (TargetMatcher)cMatches[i];
+                    Matcher[] defaultMatches = cMatch.getMatchables();
                     if (defaultMatches != null && defaultMatches.length > 0) {
                         // loop in each SubjectMatch, ActionMatch, ResourceMatch and EnvironmentMatch to get child
                         // AttributeDesignators.
                         for (int j = 0; j < defaultMatches.length; j ++) {
-                            DefaultMatch defaultMatch = (DefaultMatch)defaultMatches[j];
+                            TargetMatchMatcher defaultMatch = (TargetMatchMatcher)defaultMatches[j];
                             // get the attribute designator
                             Expression expression = defaultMatch.getAttributeDesignatorOrSelector();
                             if (expression instanceof AttributeDesignator) {
@@ -239,24 +245,24 @@ public class PolicyCache extends Cache {
         return result;
     }
 
-    private List<DisjunctiveMatch> getElementsFromTarget(Target target) {
-        List<DisjunctiveMatch> targetElems = new ArrayList<DisjunctiveMatch>();
-        DisjunctiveMatch subjs = target.getSubjects();
+    private List<TargetsMatcher> getElementsFromTarget(Target target) {
+        List<TargetsMatcher> targetElems = new ArrayList<TargetsMatcher>();
+        TargetsMatcher subjs = target.getSubjects();
         if (subjs != null) {
             targetElems.add(subjs);
         }
 
-        DisjunctiveMatch res = target.getResources();
+        TargetsMatcher res = target.getResources();
         if (res != null) {
             targetElems.add(res);
         }
         
-        DisjunctiveMatch acts = target.getActions();
+        TargetsMatcher acts = target.getActions();
         if (acts != null) {
             targetElems.add(acts);
         }
 
-        DisjunctiveMatch envs = target.getEnvironments();
+        TargetsMatcher envs = target.getEnvironments();
         if (envs != null) {
             targetElems.add(envs);
         }
@@ -279,7 +285,7 @@ public class PolicyCache extends Cache {
         return false;
     }
 
-    private boolean isMatchFunctionEquivalentType(DefaultMatch match) throws BuiltInFunctionNotFoundException {
+    private boolean isMatchFunctionEquivalentType(TargetMatchMatcher match) throws BuiltInFunctionNotFoundException {
         try {
             BuiltInFunction func = FunctionRegistry.getInstance().lookup(match.getMatchID());
             if (func.getAttribute(EquivalentFunction.class) != null) {

@@ -51,6 +51,20 @@ public class StatusType {
     protected StatusDetailType statusDetail;
 
     /**
+     * The default constructor
+     */
+    public StatusType() {}
+
+    /**
+     * 
+     */
+    public StatusType(StatusCodeType statusCode, String statusMsg, StatusDetailType statusDetail) {
+        this.statusCode = statusCode;
+        this.statusMessage = statusMsg;
+        this.statusDetail = statusDetail;
+    }
+
+    /**
      * Gets the value of the statusCode property.
      * 
      * @return

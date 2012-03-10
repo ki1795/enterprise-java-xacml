@@ -1,6 +1,8 @@
 package deprecated.an.xacml.policy;
 
-public class Subject extends ConjunctiveMatch {
+import an.xacml.engine.evaluator.TargetMatcher;
+
+public class Subject extends TargetMatcher {
     private SubjectMatch[] subjectMatches;
 
     public Subject(SubjectMatch[] subjectMatches) {

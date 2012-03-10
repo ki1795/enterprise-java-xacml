@@ -1,6 +1,5 @@
 package an.xacml.function;
 
-import java.net.URI;
 
 import an.xacml.engine.ctx.EvaluationContext;
 
@@ -18,7 +17,7 @@ public interface BuiltInFunction {
      * Return the functions XACML id
      * @return
      */
-    public URI getFunctionId();
+    public String getFunctionId();
     /**
      * The function should have attributes, this method is to get attribute for function by given key.
      * @param key

@@ -1,6 +1,8 @@
 package deprecated.an.xacml.policy;
 
-public class Environment extends ConjunctiveMatch {
+import an.xacml.engine.evaluator.TargetMatcher;
+
+public class Environment extends TargetMatcher {
     private EnvironmentMatch[] environmentMatches;
 
     public Environment(EnvironmentMatch[] environmentMatches) {

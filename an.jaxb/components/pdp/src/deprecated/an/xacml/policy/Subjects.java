@@ -1,6 +1,8 @@
 package deprecated.an.xacml.policy;
 
-public class Subjects extends DisjunctiveMatch {
+import an.xacml.engine.evaluator.TargetsMatcher;
+
+public class Subjects extends TargetsMatcher {
     private Subject[] subjects;
     public Subjects(Subject[] subjects) {
         if (subjects == null || subjects.length < 1) {

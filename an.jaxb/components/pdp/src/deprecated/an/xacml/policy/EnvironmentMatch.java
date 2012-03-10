@@ -3,8 +3,9 @@ package deprecated.an.xacml.policy;
 import java.net.URI;
 
 import an.xacml.Expression;
+import an.xacml.engine.evaluator.TargetMatchMatcher;
 
-public class EnvironmentMatch extends DefaultMatch {
+public class EnvironmentMatch extends TargetMatchMatcher {
     public EnvironmentMatch(URI matchId, AttributeValue value, Expression designatorOrSelector) {
         this.matchId = matchId;
         this.attributeValue = value;

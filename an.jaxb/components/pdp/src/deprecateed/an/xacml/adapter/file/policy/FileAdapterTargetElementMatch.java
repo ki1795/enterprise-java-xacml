@@ -8,11 +8,11 @@ import java.net.URI;
 import org.w3c.dom.Element;
 
 import deprecated.an.xacml.policy.AttributeValue;
-import deprecated.an.xacml.policy.DefaultMatch;
 import deprecateed.an.xacml.adapter.DataAdapter;
 
 import an.xacml.Expression;
 import an.xacml.XACMLElement;
+import an.xacml.engine.evaluator.TargetMatchMatcher;
 import an.xml.XMLElement;
 
 public abstract class FileAdapterTargetElementMatch extends AbstractFileAdapterPolicyElement {
@@ -87,7 +87,7 @@ public abstract class FileAdapterTargetElementMatch extends AbstractFileAdapterP
 
     protected void initializeTargetElement(XACMLElement engineElem) throws Exception {
         this.engineElem = engineElem;
-        DefaultMatch match = (DefaultMatch)engineElem;
+        TargetMatchMatcher match = (TargetMatchMatcher)engineElem;
 
         xmlElement = createPolicyElement();
         xmlElement.setAttribute(ATTR_MATCHID, match.getMatchID().toString());

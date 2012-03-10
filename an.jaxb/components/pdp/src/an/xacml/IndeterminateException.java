@@ -1,6 +1,5 @@
 package an.xacml;
 
-import java.net.URI;
 
 /**
  * This class represent the Indeterminate error during the matching or evaluating process.
@@ -10,7 +9,7 @@ public class IndeterminateException extends Exception {
     /**
      * The status code indicate the cause of the exception.
      */
-    private URI statusCode = Constants.STATUS_UNKNOWNERROR;
+    private String statusCode = Constants.STATUS_UNKNOWNERROR;
     /**
      * The caller could attach an object that include all detailed information about the exception, the exception 
      * receiver then could retrieve and process it with the final desicion.
@@ -29,25 +28,25 @@ public class IndeterminateException extends Exception {
         attachedObject = this;
     }
 
-    public IndeterminateException(String message, URI status) {
+    public IndeterminateException(String message, String status) {
         super(message);
         statusCode = status;
         // The default attached object is self.
         attachedObject = this;
     }
 
-    public IndeterminateException(String message, Throwable t, URI status) {
+    public IndeterminateException(String message, Throwable t, String status) {
         super(message, t);
         statusCode = status;
         // The default attached object is self.
         attachedObject = this;
     }
 
-    public URI getStatusCode() {
+    public String getStatusCode() {
         return statusCode;
     }
 
-    public void setStatusCode(URI statusCode) {
+    public void setStatusCode(String statusCode) {
         this.statusCode = statusCode;
     }
     

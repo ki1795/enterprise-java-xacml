@@ -7,11 +7,11 @@ import java.lang.reflect.Constructor;
 
 import org.w3c.dom.Element;
 
-import deprecated.an.xacml.policy.DisjunctiveMatch;
 import deprecateed.an.xacml.adapter.DataAdapter;
 
-import an.xacml.Matchable;
 import an.xacml.XACMLElement;
+import an.xacml.engine.evaluator.TargetsMatcher;
+import an.xacml.engine.evaluator.Matcher;
 import an.xml.XMLElement;
 
 public abstract class FileAdapterTargetElements extends AbstractFileAdapterPolicyElement {
@@ -65,7 +65,7 @@ public abstract class FileAdapterTargetElements extends AbstractFileAdapterPolic
         this.engineElem = engineElem;
         xmlElement = createPolicyElement();
 
-        Matchable[] matches = ((DisjunctiveMatch)engineElem).getMatchables();
+        Matcher[] matches = ((TargetsMatcher)engineElem).getMatchables();
         for (int i = 0; i < matches.length; i ++) {
             // Retrieve the corresponding DataAdapter class, then create an instance
             Class<?> dataAdapterClz = getPolicyDataAdapterClassByXACMLElementType(matches[i].getClass());

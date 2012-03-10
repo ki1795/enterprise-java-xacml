@@ -13,8 +13,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
-import oasis.names.tc.xacml._2_0.policy.schema.os.ObligationsType;
 
+import oasis.names.tc.xacml._2_0.policy.schema.os.ObligationsType;
 
 /**
  * <p>Java class for ResultType complex type.
@@ -45,6 +45,13 @@ import oasis.names.tc.xacml._2_0.policy.schema.os.ObligationsType;
     "obligations"
 })
 public class ResultType {
+    // A quick reference for NotApplicable result.
+    public static final ResultType PERMIT =
+            new ResultType(DecisionType.PERMIT, new StatusType(StatusCodeType.EVAL_STATUS_OK, null, null), null, null);
+    public static final ResultType DENY = 
+            new ResultType(DecisionType.DENY, new StatusType(StatusCodeType.EVAL_STATUS_OK, null, null), null, null);
+    public static final ResultType NOTAPPLICABLE = 
+            new ResultType(DecisionType.NOT_APPLICABLE, new StatusType(StatusCodeType.EVAL_STATUS_OK, null, null), null, null);
 
     @XmlElement(name = "Decision", namespace = "urn:oasis:names:tc:xacml:2.0:context:schema:os", required = true)
     protected DecisionType decision;
@@ -54,6 +61,25 @@ public class ResultType {
     protected ObligationsType obligations;
     @XmlAttribute(name = "ResourceId")
     protected String resourceId;
+
+    /**
+     * The default constructor
+     */
+    public ResultType() {}
+
+    /**
+     * For fast construct the default result values.
+     * @param decision
+     * @param status
+     * @param obligations
+     * @param resId
+     */
+    public ResultType(DecisionType decision, StatusType status, ObligationsType obligations, String resId) {
+        this.decision = decision;
+        this.status = status;
+        this.obligations = obligations;
+        this.resourceId = resId;
+    }
 
     /**
      * Gets the value of the decision property.

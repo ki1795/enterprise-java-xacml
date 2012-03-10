@@ -1,6 +1,8 @@
 package deprecated.an.xacml.policy;
 
-public class Actions extends DisjunctiveMatch {
+import an.xacml.engine.evaluator.TargetsMatcher;
+
+public class Actions extends TargetsMatcher {
     private Action[] actions;
     public Actions(Action[] actions) {
         if (actions == null || actions.length < 1) {

@@ -82,7 +82,7 @@ public class ConditionType {
      *     
      */
     public void setExpression(JAXBElement<?> value) {
-        this.expression = ((JAXBElement<?> ) value);
+        this.expression = value;
     }
 
 }
