@@ -31,6 +31,7 @@ import oasis.names.tc.xacml._2_0.policy.schema.os.AttributeValueType;
 import oasis.names.tc.xacml._2_0.policy.schema.os.EngineObjectFactory;
 import oasis.names.tc.xacml._2_0.policy.schema.os.PolicySetType;
 import oasis.names.tc.xacml._2_0.policy.schema.os.PolicyType;
+import oasis.names.tc.xacml._2_0.policy.schema.os.VariableDefinitionType;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -61,6 +62,8 @@ public class EvaluationContext {
     private AttributeValueType time;
     private AttributeValueType date;
     private AttributeValueType dateTime;
+
+    private Map<String, VariableDefinitionType> variableDefs = new HashMap<String, VariableDefinitionType>();
 
     private static XPathFactory xpathFactory = XPathFactory.newInstance();
     private XPath xpath = xpathFactory.newXPath();
@@ -104,6 +107,10 @@ public class EvaluationContext {
 
     public Request getRequest() {
         return request;
+    }
+
+    public Map<String, VariableDefinitionType> getVariableDefinitions() {
+    	return this.variableDefs;
     }
 
     /**
