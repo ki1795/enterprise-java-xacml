@@ -1,14 +1,16 @@
 package an.xacml.engine.evaluator;
 
-import static deprecated.an.xacml.context.Decision.Deny;
-import static deprecated.an.xacml.context.Decision.Permit;
+import static oasis.names.tc.xacml._2_0.context.schema.os.DecisionType.DENY;
+import static oasis.names.tc.xacml._2_0.context.schema.os.DecisionType.PERMIT;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-import deprecated.an.xacml.context.Result;
+import oasis.names.tc.xacml._2_0.context.schema.os.ResultType;
 import oasis.names.tc.xacml._2_0.policy.schema.os.CombinerParametersType;
+import oasis.names.tc.xacml._2_0.policy.schema.os.ObligationType;
 import oasis.names.tc.xacml._2_0.policy.schema.os.ObligationsType;
 import oasis.names.tc.xacml._2_0.policy.schema.os.PolicyType;
 import oasis.names.tc.xacml._2_0.policy.schema.os.RuleCombinerParametersType;
@@ -47,27 +49,31 @@ public class PolicyEvaluator implements Evaluator {
     public Object evaluate(EvaluationContext ctx) throws IndeterminateException {
         try {
             ctx.setCurrentEvaluatingPolicy(policy);
-            // TODO update the variable definitions to the context.
+            // update the variable definitions to the context.
+            Map<String, VariableDefinitionType> ctxVarDefs = ctx.getVariableDefinitions();
+            for (VariableDefinitionType varDef : variableDefs) {
+                ctxVarDefs.put(varDef.getVariableId(), varDef);
+            }
 
-            //policy.get
-            if (target.match(ctx) && rules != null && rules.length > 0) {
+            if (EvaluatorFactory.getInstance().getMatcher(target).match(ctx) && rules.size() > 0) {
                 // Get rule-combine-alg function from function registry, and then pass rules, combinerParams and 
                 // RuleCombinerParams to it, get the EvaluationResult
                 FunctionRegistry functionReg = FunctionRegistry.getInstance();
                 BuiltInFunction ruleCombAlg = functionReg.lookup(ruleCombiningAlgId);
 
-                Result ruleResult =(Result)ruleCombAlg.invoke(ctx,
-                        new Object[] {rules, combinerParameters, ruleCombinerParameters});
+                ResultType ruleResult =(ResultType)ruleCombAlg.invoke(ctx,
+                        new Object[] {rules.toArray(new RuleType[0]), combinerParameters,
+                                      ruleCombinerParameters.toArray(new RuleCombinerParametersType[0])});
                 // Retrieve the corresponding Obligations by Effect in EvaluationResult, and set it to EvaluationResult.
-                if ((ruleResult.getDecision() == Permit || ruleResult.getDecision() == Deny) && obligations != null) {
+                if ((ruleResult.getDecision() == PERMIT || ruleResult.getDecision() == DENY) && obligations != null) {
                     // Clone the result
-                    ruleResult = new Result(ruleResult);
-                    appendPolicyObligationsToResult(ruleResult, obligations, ctx, supportInnerExpression());
+                    ruleResult = new ResultType(ruleResult);
+                    appendPolicyObligationsToResult(ruleResult, obligations, ctx);
                 }
                 return ruleResult;
             }
             // NotApplicable
-            return Result.NOTAPPLICABLE;
+            return ResultType.NOTAPPLICABLE;
         }
         catch (IndeterminateException ex) {
             throw ex;
@@ -125,6 +131,25 @@ public class PolicyEvaluator implements Evaluator {
         	else if (o instanceof VariableDefinitionType) {
         		variableDefs.add((VariableDefinitionType)o);
         	}
+        }
+    }
+
+    protected static void appendPolicyObligationsToResult(
+            ResultType result, ObligationsType obls, EvaluationContext ctx) {
+
+        List<ObligationType> list = obls.getObligation();
+        String decision = result.getDecision().value();
+        if (result.getObligations() == null) {
+            result.setObligations(new ObligationsType());
+        }
+        List<ObligationType> resultObls = result.getObligations().getObligation();
+
+        for (ObligationType obl : list) {
+            // It's should be ok we use "==" not use equals
+            if (obl.getFulfillOn().value() == decision) {
+                // add a clone one.
+                resultObls.add(new ObligationType(obl));
+            }
         }
     }
 }

@@ -82,7 +82,7 @@ public class AttributeValueType {
      * Defined it as transient to prevent JAXB map it to XML document.
      */
     @XmlTransient
-    private Object typedValue;
+    protected Object typedValue;
 
     /**
      * The default constructor

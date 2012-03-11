@@ -56,12 +56,22 @@ public class StatusType {
     public StatusType() {}
 
     /**
-     * 
+     * A convenient constructor.
      */
     public StatusType(StatusCodeType statusCode, String statusMsg, StatusDetailType statusDetail) {
         this.statusCode = statusCode;
         this.statusMessage = statusMsg;
         this.statusDetail = statusDetail;
+    }
+
+    /**
+     * A deep copy constructor. Actually it's not a real deep copy constructor, but it should OK for us.
+     * @param original
+     */
+    public StatusType(StatusType original) {
+        this.statusCode = original.statusCode;
+        this.statusMessage = original.statusMessage;
+        this.statusDetail = original.statusDetail;
     }
 
     /**

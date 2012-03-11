@@ -44,6 +44,21 @@ public class AttributeAssignmentType
     protected String attributeId;
 
     /**
+     * Default constructor.
+     */
+    public AttributeAssignmentType() {}
+
+    /**
+     * A copy constructor.
+     */
+    public AttributeAssignmentType(AttributeAssignmentType original) {
+        this.attributeId = original.attributeId;
+        this.dataType = original.dataType;
+        this.content = original.content;
+        this.typedValue = original.typedValue;
+    }
+
+    /**
      * Gets the value of the attributeId property.
      * 
      * @return

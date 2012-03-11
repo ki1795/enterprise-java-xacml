@@ -54,6 +54,25 @@ public class ObligationType {
     protected EffectType fulfillOn;
 
     /**
+     * Default constructor.
+     */
+    public ObligationType() {}
+
+    /**
+     * A copy constructor
+     */
+    public ObligationType(ObligationType original) {
+        this.obligationId = original.obligationId;
+        this.fulfillOn = original.fulfillOn;
+
+        List<AttributeAssignmentType> orgList = original.getAttributeAssignment();
+        List<AttributeAssignmentType> list = getAttributeAssignment();
+        for (AttributeAssignmentType attrAssign : orgList) {
+            list.add(new AttributeAssignmentType(attrAssign));
+        }
+    }
+
+    /**
      * Gets the value of the attributeAssignment property.
      * 
      * <p>

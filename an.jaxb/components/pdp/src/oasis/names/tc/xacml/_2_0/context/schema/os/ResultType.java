@@ -82,6 +82,17 @@ public class ResultType {
     }
 
     /**
+     * A deep copy constructor
+     * @param original
+     */
+    public ResultType(ResultType original) {
+        this.decision = original.decision;
+        this.status = new StatusType(original.status);
+        this.obligations = new ObligationsType(original.obligations);
+        this.resourceId = original.resourceId;
+    }
+
+    /**
      * Gets the value of the decision property.
      * 
      * @return

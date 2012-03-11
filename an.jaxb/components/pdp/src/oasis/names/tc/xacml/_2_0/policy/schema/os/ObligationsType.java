@@ -45,6 +45,23 @@ public class ObligationsType {
     protected List<ObligationType> obligation;
 
     /**
+     * Default constructor.
+     */
+    public ObligationsType() {}
+
+    /**
+     * A copy constructor.
+     * @param original
+     */
+    public ObligationsType(ObligationsType original) {
+        List<ObligationType> orgList = original.getObligation();
+        List<ObligationType> list = getObligation();
+        for (ObligationType obl : orgList) {
+            list.add(new ObligationType(obl));
+        }
+    }
+
+    /**
      * Gets the value of the obligation property.
      * 
      * <p>
