@@ -27,6 +27,11 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import oasis.names.tc.xacml._2_0.policy.schema.os.AttributeValueType;
+import oasis.names.tc.xacml._2_0.policy.schema.os.EngineObjectFactory;
+import oasis.names.tc.xacml._2_0.policy.schema.os.PolicySetType;
+import oasis.names.tc.xacml._2_0.policy.schema.os.PolicyType;
+
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -42,48 +47,58 @@ import an.xacml.AdditionalNamespaceMappingEntry;
 import an.xacml.Constants;
 import an.xacml.IndeterminateException;
 import an.xacml.XACMLElement;
+import an.xacml.engine.PDP;
 import an.xml.XMLDataTypeMappingException;
 import an.xml.XMLDataTypeRegistry;
 import an.xml.XMLGeneralException;
 
-public class EvaluationContext implements AdditionalNamespaceMappingEntry {
+public class EvaluationContext {
+    // current PDP we evaluating policies inside.
+    private PDP pdp;
     private Request request;
-    private AbstractPolicy policy;
+    private Object policy;
     private XMLGregorianCalendar current;
-    private AttributeValue time;
-    private AttributeValue date;
-    private AttributeValue dateTime;
+    private AttributeValueType time;
+    private AttributeValueType date;
+    private AttributeValueType dateTime;
 
     private static XPathFactory xpathFactory = XPathFactory.newInstance();
-    private XPath xpath;
-    // Since the content of attribute value may introduce additional namespaces. We need add these namespaces to the top
-    // level element, then they can be retrieved by program that requires those namespaces, such as a attribute selector.
-    private Map<String, String> additionalNSMappings;
+    private XPath xpath = xpathFactory.newXPath();
 
     public EvaluationContext(Request request) throws EvaluationContextException {
         this.request = request;
         try {
             current = XMLDataTypeRegistry.getDatatypeFactory().newXMLGregorianCalendar();
-            time = AttributeValue.getInstance(Constants.TYPE_TIME, current);
-            date = AttributeValue.getInstance(Constants.TYPE_DATE, current);
-            dateTime = AttributeValue.getInstance(Constants.TYPE_DATETIME, current);
-            xpath = xpathFactory.newXPath();
+            time = EngineObjectFactory.createAttributeValue(Constants.TYPE_TIME, current);
+            date = EngineObjectFactory.createAttributeValue(Constants.TYPE_DATE, current);
+            dateTime = EngineObjectFactory.createAttributeValue(Constants.TYPE_DATETIME, current);
         } catch (Exception e) {
             throw new EvaluationContextException("Cannot initialize evaluation context due to error :", e);
         }
     }
 
-    public void setCurrentEvaluatingPolicy(AbstractPolicy policy) {
-        this.policy = policy;
-
-        XACMLElement parent = policy;
-        while (parent != null) {
-            populatePolicyNamespaceMappings((AbstractPolicy)parent);
-            parent = parent.getParentElement();
-        }
+    public void setPDP(PDP pdp) {
+        this.pdp = pdp;
     }
 
-    public AbstractPolicy getCurrentEvaluatingPolicy() {
+    public PDP getPDP() {
+        return this.pdp;
+    }
+
+    /**
+     * FIXME should it be the root evaluating element? or should we add another field to keep PDP (we may need PDP
+     * configuration information while evaluating polices) information?
+     * @param policy
+     */
+    public void setCurrentEvaluatingPolicy(PolicyType policy) {
+        this.policy = policy;
+    }
+
+    public void setCurrentEvaluatingPolicy(PolicySetType policy) {
+        this.policy = policy;
+    }
+
+    public Object getCurrentEvaluatingPolicy() {
         return policy;
     }
 
@@ -91,6 +106,9 @@ public class EvaluationContext implements AdditionalNamespaceMappingEntry {
         return request;
     }
 
+    /**
+     * TODO should be moved to AttributeDesignatorEvaluator class
+     */
     public AttributeValue[] getAttributeValues(URI attrId, URI dataType, String issuer, URI subjCategory)
     throws XMLGeneralException, IndeterminateException {
         // First trying to get attributes from request
@@ -132,6 +150,9 @@ public class EvaluationContext implements AdditionalNamespaceMappingEntry {
         return result != null ? result : new AttributeValue[0];
     }
 
+    /**
+     * TODO should be moved to AttributeSelectorEvaluator class
+     */
     public AttributeValue[] getAttributeValues(String requestCtxPath, URI dataType) throws IndeterminateException {
         try {
             // First trying to get attributes from request
@@ -166,30 +187,22 @@ public class EvaluationContext implements AdditionalNamespaceMappingEntry {
         }
     }
 
-    private AttributeValue[] tryingGetDateTimeAttribute(URI attrId) {
+    private AttributeValueType[] tryingGetDateTimeAttribute(URI attrId) {
         if (ATTR_TIME.equals(attrId)) {
-            return new AttributeValue[] {time};
+            return new AttributeValueType[] {time};
         }
         else if (ATTR_DATE.equals(attrId)) {
-            return new AttributeValue[] {date};
+            return new AttributeValueType[] {date};
         }
         else if (ATTR_DATETIME.equals(attrId)) {
-            return new AttributeValue[] {dateTime};
+            return new AttributeValueType[] {dateTime};
         }
         return null;
     }
 
-    public void setAdditionalNSMappings(Map<String, String> mappings) {
-        this.additionalNSMappings = mappings;
-        // We should populate the namespace mappings that provided by current element to XPath's context.
-        // We don't remove previous mappings.
-        populateAdditionalNamespaces(additionalNSMappings);
-    }
-
-    public Map<String, String> getAdditionalNSMappings() {
-        return additionalNSMappings;
-    }
-
+    /**
+     * TODO should be moved to AttributeDesignatorEvaluator (SubjectAttributeDesignatorEvaluator?)
+     */
     private AttributeValue[] getAttributeValuesFromRequest(URI attrId, URI dataType, String issuer, URI subjCategory)
     throws IndeterminateException {
         try {
@@ -236,6 +249,9 @@ public class EvaluationContext implements AdditionalNamespaceMappingEntry {
         }
     }
 
+    /**
+     * TODO should be moved to AttributeSelectorEvaluator class
+     */
     private AttributeValue[] getAttributeValuesFromRequest(String requestCtxPath, URI dataType)
     throws IndeterminateException {
         Vector<AttributeValue> result = new Vector<AttributeValue>();
@@ -286,42 +302,6 @@ public class EvaluationContext implements AdditionalNamespaceMappingEntry {
         catch (Throwable t) {
             throw new IndeterminateException("Error occurs while evaluating AttributeSelector.", t, 
                     Constants.STATUS_SYNTAXERROR);
-        }
-    }
-
-    /**
-     * We need populate top level Policy or PolicySet's namespace mappings to current XPath. This is needed by
-     * Attribute Selector
-     */
-    private void populatePolicyNamespaceMappings(AbstractPolicy policy) {
-        // Use root policy's namespace
-        if (policy != null) {
-            NamespaceContextProvider nsCtx = new NamespaceContextProvider();
-            Map<String, String> nsMap = policy.getPolicyNamespaceMappings();
-            Iterator<String> keys = nsMap.keySet().iterator();
-            while (keys.hasNext()) {
-                String key = keys.next();
-                nsCtx.addNSMapping(key, nsMap.get(key));
-            }
-            xpath.setNamespaceContext(nsCtx);
-        }
-    }
-
-    /**
-     * If current element has additional namespace mappings, we need populate them to XPath, this is needed by Attribute
-     * Selector.
-     * @param nsMappings
-     */
-    private void populateAdditionalNamespaces(Map<String, String> nsMappings) {
-        NamespaceContext obj = xpath.getNamespaceContext();
-        if (obj != null && obj instanceof NamespaceContextProvider) {
-            NamespaceContextProvider nsCtx = (NamespaceContextProvider)obj;
-            Iterator<String> keys = nsMappings.keySet().iterator();
-            while (keys.hasNext()) {
-                String key = keys.next();
-                nsCtx.addNSMapping(key, nsMappings.get(key));
-            }
-            xpath.setNamespaceContext(nsCtx);
         }
     }
 

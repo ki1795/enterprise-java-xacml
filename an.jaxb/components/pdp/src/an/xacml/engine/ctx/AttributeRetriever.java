@@ -34,7 +34,7 @@ import an.xacml.IndeterminateException;
  * 
  * @TODO
  * AttributeRetriever should be disabled where the strict audit policy is enforced, because the attributes get from
- * attributeRetriever may not be re-get after many years later.
+ * attributeRetriever could not be re-get after years later.
  */
 public interface AttributeRetriever {
     // These constants indicate the attribute retriever supported attribute's type

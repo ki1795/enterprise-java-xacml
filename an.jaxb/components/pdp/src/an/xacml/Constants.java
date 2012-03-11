@@ -76,9 +76,9 @@ public abstract interface Constants {
     public static final URI ATTR_ACTION_ID = URI.create("urn:oasis:names:tc:xacml:1.0:action:action-id");
     public static final URI ATTR_ACTION_IMPLIED = URI.create("urn:oasis:names:tc:xacml:1.0:action:implied-action");
     // XACML used types
-    public static final URI TYPE_TIME = URI.create(XMLDataTypeRegistry.XMLTypeAsString(TIME));
-    public static final URI TYPE_DATE = URI.create(XMLDataTypeRegistry.XMLTypeAsString(DATE));
-    public static final URI TYPE_DATETIME = URI.create(XMLDataTypeRegistry.XMLTypeAsString(DATETIME));
+    public static final String TYPE_TIME = XMLDataTypeRegistry.XMLTypeAsString(TIME);
+    public static final String TYPE_DATE = XMLDataTypeRegistry.XMLTypeAsString(DATE);
+    public static final String TYPE_DATETIME = XMLDataTypeRegistry.XMLTypeAsString(DATETIME);
     public static final URI TYPE_STRING = URI.create("http://www.w3.org/2001/XMLSchema#string");
     public static final String TYPE_BOOLEAN = "http://www.w3.org/2001/XMLSchema#boolean";
     public static final URI TYPE_INTEGER = URI.create("http://www.w3.org/2001/XMLSchema#integer");
