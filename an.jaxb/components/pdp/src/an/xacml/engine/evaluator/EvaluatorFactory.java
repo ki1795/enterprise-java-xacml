@@ -39,8 +39,7 @@ public class EvaluatorFactory {
         evaluatorReg.put(AttributeValueType.class, AttributeValueEvaluator.class);
         evaluatorReg.put(PolicyType.class, PolicyEvaluator.class);
 
-        matcherReg.put(PolicyType.class, PolicyEvaluator.class);
-
+        matcherReg.put(PolicyType.class, PolicyMatcher.class);
         matcherReg.put(ActionType.class, TargetMatcher.class);
         matcherReg.put(EnvironmentType.class, TargetMatcher.class);
         matcherReg.put(ResourceType.class, TargetMatcher.class);

@@ -12,6 +12,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
 
@@ -50,6 +51,23 @@ public class IdReferenceType {
     protected String earliestVersion;
     @XmlAttribute(name = "LatestVersion")
     protected String latestVersion;
+
+    // The resolved policy, it could be a policy or a policySet. Set as transient to prevent mapping to XML.
+    @XmlTransient
+    private Object policy;
+
+    public Object getPolicy() {
+        return policy;
+    }
+
+    /**
+     * Internal use only. This value will be set while evaluating the element.
+     * @deprecated
+     * @param policy
+     */
+    public void setPolicy(Object policy) {
+        this.policy = policy;
+    }
 
     /**
      * Gets the value of the value property.

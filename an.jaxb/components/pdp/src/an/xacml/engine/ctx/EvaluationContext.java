@@ -93,11 +93,7 @@ public class EvaluationContext {
      * configuration information while evaluating polices) information?
      * @param policy
      */
-    public void setCurrentEvaluatingPolicy(PolicyType policy) {
-        this.policy = policy;
-    }
-
-    public void setCurrentEvaluatingPolicy(PolicySetType policy) {
+    public void setCurrentEvaluatingPolicy(Object policy) {
         this.policy = policy;
     }
 

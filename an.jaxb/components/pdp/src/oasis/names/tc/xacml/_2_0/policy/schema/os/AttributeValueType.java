@@ -179,13 +179,4 @@ public class AttributeValueType {
     public Object getValue() {
         return typedValue;
     }
-
-    /**
-     * Internally used. Set the evaluation result.
-     * @deprecated
-     * @param typedValue
-     */
-    /* packaged */ void setValue(Object typedValue) {
-        this.typedValue = typedValue;
-    }
 }
