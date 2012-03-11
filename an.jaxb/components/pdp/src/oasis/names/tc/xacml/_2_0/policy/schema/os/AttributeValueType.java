@@ -86,7 +86,6 @@ public class AttributeValueType {
 
     /**
      * The default constructor
-     * FIXME can we set it as packaged? could it impact the JAXB XML-Object loading/mapping?
      */
     /* packaged */ AttributeValueType() {}
 
@@ -177,15 +176,16 @@ public class AttributeValueType {
      * We only provided a getter because it's the evaluation result, not the original content.
      * @return
      */
-    public Object getTypedValue() {
+    public Object getValue() {
         return typedValue;
     }
 
     /**
      * Internally used. Set the evaluation result.
+     * @deprecated
      * @param typedValue
      */
-    /* packaged */ void setTypedValue(Object typedValue) {
+    /* packaged */ void setValue(Object typedValue) {
         this.typedValue = typedValue;
     }
 }
