@@ -5,6 +5,7 @@ import static oasis.names.tc.xacml._2_0.context.schema.os.DecisionType.PERMIT;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,7 +34,7 @@ public class PolicyEvaluator implements Evaluator {
     private String ruleCombiningAlgId;
     private CombinerParametersType combinerParameters;
     private List<RuleCombinerParametersType> ruleCombinerParameters = new ArrayList<RuleCombinerParametersType>();
-    private List<VariableDefinitionType> variableDefs = new ArrayList<VariableDefinitionType>();
+    private Map<String, VariableDefinitionType> variableDefs = new HashMap<String, VariableDefinitionType>();
     private ObligationsType obligations;
 
     /**
@@ -47,13 +48,13 @@ public class PolicyEvaluator implements Evaluator {
 
     @Override
     public Object evaluate(EvaluationContext ctx) throws IndeterminateException {
+        Object previousPolicy = null;
         try {
-            ctx.setCurrentEvaluatingPolicy(policy);
+            previousPolicy = ctx.setCurrentEvaluatingPolicy(policy);
+            // check the ruleCombinerParameters is valid or not
+            validateRuleCombinerParameters();
             // update the variable definitions to the context.
-            Map<String, VariableDefinitionType> ctxVarDefs = ctx.getVariableDefinitions();
-            for (VariableDefinitionType varDef : variableDefs) {
-                ctxVarDefs.put(varDef.getVariableId(), varDef);
-            }
+            ctx.defineVariables(variableDefs);
 
             if (EvaluatorFactory.getInstance().getMatcher(target).match(ctx) && rules.size() > 0) {
                 // Get rule-combine-alg function from function registry, and then pass rules, combinerParams and 
@@ -68,7 +69,7 @@ public class PolicyEvaluator implements Evaluator {
                 if ((ruleResult.getDecision() == PERMIT || ruleResult.getDecision() == DENY) && obligations != null) {
                     // Clone the result
                     ruleResult = new ResultType(ruleResult);
-                    appendPolicyObligationsToResult(ruleResult, obligations, ctx);
+                    appendPolicyObligationsToResult(ruleResult, obligations);
                 }
                 return ruleResult;
             }
@@ -87,6 +88,24 @@ public class PolicyEvaluator implements Evaluator {
             }
             throw new IndeterminateException("Error occurs while evaluating Policy.", t, Constants.STATUS_SYNTAXERROR);
         }
+        finally {
+            // release the variableDefinition from current policy scope
+            ctx.releaseVariables();
+            // set the current evaluating policy back to the up level policy.
+            ctx.setCurrentEvaluatingPolicy(previousPolicy);
+        }
+    }
+
+    private void validateRuleCombinerParameters() throws IndeterminateException {
+        for (RuleCombinerParametersType ruleParams : ruleCombinerParameters) {
+            for (RuleType rule : rules) {
+                if (ruleParams.getRuleIdRef().equals(rule.getRuleId())) {
+                    continue;
+                }
+            }
+            throw new IndeterminateException("The RuleCombinerParameters doesn't have a matched rule id : " +
+                                             ruleParams.getRuleIdRef(), Constants.STATUS_SYNTAXERROR);
+        }
     }
 
     /**
@@ -104,7 +123,7 @@ public class PolicyEvaluator implements Evaluator {
         	if (o instanceof RuleType) {
         		rules.add((RuleType)o);
         	}
-        	// extract anb merge parameters
+        	// extract and merge parameters
         	else if (o instanceof CombinerParametersType) {
         		if (combinerParameters == null) {
         			combinerParameters = (CombinerParametersType)o;
@@ -128,17 +147,19 @@ public class PolicyEvaluator implements Evaluator {
         		}
         		// add as a new parameter
         		if (!merged) {
+        		    // we will check the rule id that the ruleCombinerParameters specified is match an existing rule or not in
+        		    // evaluate method
         			ruleCombinerParameters.add((RuleCombinerParametersType)o);
         		}
         	}
         	else if (o instanceof VariableDefinitionType) {
-        		variableDefs.add((VariableDefinitionType)o);
+        	    VariableDefinitionType varDef = (VariableDefinitionType)o;
+        		variableDefs.put(varDef.getVariableId(), varDef);
         	}
         }
     }
 
-    protected static void appendPolicyObligationsToResult(
-            ResultType result, ObligationsType obls, EvaluationContext ctx) {
+    protected static void appendPolicyObligationsToResult(ResultType result, ObligationsType obls) {
 
         List<ObligationType> list = obls.getObligation();
         String decision = result.getDecision().value();

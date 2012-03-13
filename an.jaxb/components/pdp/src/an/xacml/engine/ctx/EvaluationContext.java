@@ -63,7 +63,13 @@ public class EvaluationContext {
     private AttributeValueType date;
     private AttributeValueType dateTime;
 
-    private Map<String, VariableDefinitionType> variableDefs = new HashMap<String, VariableDefinitionType>();
+    /**
+     * Variable definition is scoped by policy. When we start to evaluate a policy, we define the variables on context for others
+     * reference, and then we release them after the policy evaluate done. Since policySet may include child polices, we need to
+     * distinguish all variables among different policies (scope/namespace).
+     */
+    private Map<Object, Map<String, VariableDefinitionType>> variableDefs = 
+            new HashMap<Object, Map<String, VariableDefinitionType>>();
 
     private static XPathFactory xpathFactory = XPathFactory.newInstance();
     private XPath xpath = xpathFactory.newXPath();
@@ -93,8 +99,10 @@ public class EvaluationContext {
      * configuration information while evaluating polices) information?
      * @param policy
      */
-    public void setCurrentEvaluatingPolicy(Object policy) {
+    public Object setCurrentEvaluatingPolicy(Object policy) {
+        Object old = this.policy;
         this.policy = policy;
+        return old;
     }
 
     public Object getCurrentEvaluatingPolicy() {
@@ -105,8 +113,24 @@ public class EvaluationContext {
         return request;
     }
 
-    public Map<String, VariableDefinitionType> getVariableDefinitions() {
-    	return this.variableDefs;
+    public void defineVariables(Map<String, VariableDefinitionType> variables) {
+        Object policy = getCurrentEvaluatingPolicy();
+
+        Map<String, VariableDefinitionType> vars = variableDefs.get(policy);
+        if (vars == null) {
+            vars = new HashMap<String, VariableDefinitionType>();
+            variableDefs.put(policy, vars);
+        }
+        // merge the variables. but actually we only define variables once while we evaluating a policy.
+        vars.putAll(variables);
+    }
+
+    public void releaseVariables() {
+        variableDefs.remove(getCurrentEvaluatingPolicy());
+    }
+
+    public Map<String, VariableDefinitionType> getVariables() {
+    	return variableDefs.get(getCurrentEvaluatingPolicy());
     }
 
     /**

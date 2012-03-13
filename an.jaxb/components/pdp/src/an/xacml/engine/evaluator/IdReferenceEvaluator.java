@@ -7,7 +7,7 @@ public class IdReferenceEvaluator implements Evaluator {
 
     @Override
     public Object evaluate(EvaluationContext ctx) throws IndeterminateException {
-        // TODO Auto-generated method stub
+        // TODO resolve the referenced policy or policySet and then set it back to IdReferenceType
         return null;
     }
 

@@ -1,8 +1,8 @@
 package an.xacml.engine.evaluator;
 
 import static an.xacml.engine.evaluator.PolicyEvaluator.appendPolicyObligationsToResult;
-import static deprecated.an.xacml.context.Decision.Deny;
-import static deprecated.an.xacml.context.Decision.Permit;
+import static oasis.names.tc.xacml._2_0.context.schema.os.DecisionType.DENY;
+import static oasis.names.tc.xacml._2_0.context.schema.os.DecisionType.PERMIT;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -10,6 +10,7 @@ import java.util.List;
 
 import javax.xml.bind.JAXBElement;
 
+import oasis.names.tc.xacml._2_0.context.schema.os.ResultType;
 import oasis.names.tc.xacml._2_0.policy.schema.os.CombinerParametersType;
 import oasis.names.tc.xacml._2_0.policy.schema.os.IdReferenceType;
 import oasis.names.tc.xacml._2_0.policy.schema.os.ObligationsType;
@@ -17,18 +18,9 @@ import oasis.names.tc.xacml._2_0.policy.schema.os.PolicyCombinerParametersType;
 import oasis.names.tc.xacml._2_0.policy.schema.os.PolicySetCombinerParametersType;
 import oasis.names.tc.xacml._2_0.policy.schema.os.PolicySetType;
 import oasis.names.tc.xacml._2_0.policy.schema.os.PolicyType;
-import oasis.names.tc.xacml._2_0.policy.schema.os.RuleCombinerParametersType;
-import oasis.names.tc.xacml._2_0.policy.schema.os.RuleType;
 import oasis.names.tc.xacml._2_0.policy.schema.os.TargetType;
-import oasis.names.tc.xacml._2_0.policy.schema.os.VariableDefinitionType;
-
-import deprecated.an.xacml.context.Result;
-import deprecated.an.xacml.policy.AbstractPolicy;
-import deprecated.an.xacml.policy.IdReference;
 import an.xacml.Constants;
 import an.xacml.IndeterminateException;
-import an.xacml.PolicySyntaxException;
-import an.xacml.XACMLElement;
 import an.xacml.engine.ctx.EvaluationContext;
 import an.xacml.engine.ctx.FunctionRegistry;
 import an.xacml.function.BuiltInFunction;
@@ -49,20 +41,18 @@ public class PolicySetEvaluator implements Evaluator {
 
     public PolicySetEvaluator(Object policySet) {
         this.policySet = (PolicySetType)policySet;
-        initialize();
     }
 
     @Override
     public Object evaluate(EvaluationContext ctx) throws IndeterminateException {
+        Object previousPolicySet = null;
         try {
-            ctx.setCurrentEvaluatingPolicy(policySet);
+            previousPolicySet = ctx.setCurrentEvaluatingPolicy(policySet);
+            initialize(ctx);
 
-            if (target.match(ctx)) {
-                // We don't call the method from PolicySet's constructor, because referenced policies may not be loaded while
-                // constructing the policySet.
-                mergePolicies();
-                if (allPolicies == null || allPolicies.length == 0) {
-                    return Result.NOTAPPLICABLE;
+            if (EvaluatorFactory.getInstance().getMatcher(target).match(ctx)) {
+                if (policies.size() == 0) {
+                    return ResultType.NOTAPPLICABLE;
                 }
 
                 // Get rule-combine-alg function from function registry, and then pass rules, combinerParams and 
@@ -70,19 +60,21 @@ public class PolicySetEvaluator implements Evaluator {
                 FunctionRegistry functionReg = FunctionRegistry.getInstance();
                 BuiltInFunction policyCombAlg = functionReg.lookup(policyCombiningAlgId);
 
-                Result policyResult =(Result)policyCombAlg.invoke(ctx, new Object[] {
-                        allPolicies, combinerParameters, policyCombinerParameters, policySetCombinerParameters});
+                ResultType policyResult = (ResultType)policyCombAlg.invoke(ctx, new Object[] {
+                        policies.toArray(), combinerParameters,
+                        policyCombinerParameters.toArray(new PolicyCombinerParametersType[0]),
+                        policySetCombinerParameters.toArray(new PolicySetCombinerParametersType[0])});
                 // Retrieve the corresponding Obligations by Effect in EvaluationResult, and set it to EvaluationResult.
-                if ((policyResult.getDecision() == Permit || policyResult.getDecision() == Deny) && obligations != null) {
-                    if (policyResult == Result.PERMIT || policyResult == Result.DENY) {
-                        policyResult = new Result(policyResult);
+                if ((policyResult.getDecision() == PERMIT || policyResult.getDecision() == DENY) && obligations != null) {
+                    if (policyResult == ResultType.PERMIT || policyResult == ResultType.DENY) {
+                        policyResult = new ResultType(policyResult);
                     }
-                    appendPolicyObligationsToResult(policyResult, obligations, ctx);
+                    appendPolicyObligationsToResult(policyResult, obligations);
                 }
                 return policyResult;
             }
             // NotApplicable
-            return Result.NOTAPPLICABLE;
+            return ResultType.NOTAPPLICABLE;
         }
         catch (IndeterminateException ex) {
             throw ex;
@@ -97,18 +89,17 @@ public class PolicySetEvaluator implements Evaluator {
             throw new IndeterminateException("Error occurs while evaluating PolicySet.", t,
                     Constants.STATUS_SYNTAXERROR);
         }
+        finally {
+            ctx.setCurrentEvaluatingPolicy(previousPolicySet);
+        }
     }
 
     /**
      * Extract elements from policySet
+     * @throws EvaluatorRegistryException 
+     * @throws IndeterminateException 
      */
-    private void initialize() {
-        /*
-        private List<Object> policies = new ArrayList<Object>();
-        private CombinerParametersType combinerParameters;
-        private List<PolicyCombinerParametersType> policyCombinerParameters = new ArrayList<PolicyCombinerParametersType>();
-        private List<PolicySetCombinerParametersType> policySetCombinerParameters = new ArrayList<PolicySetCombinerParametersType>();
-        */
+    private void initialize(EvaluationContext ctx) throws IndeterminateException, EvaluatorRegistryException {
         target = policySet.getTarget();
         policyCombiningAlgId = policySet.getPolicyCombiningAlgId();
         obligations = policySet.getObligations();
@@ -116,17 +107,21 @@ public class PolicySetEvaluator implements Evaluator {
         List<JAXBElement<?>> list = policySet.getPolicySetOrPolicyOrPolicySetIdReference();
         for (JAXBElement<?> jaxbElem : list) {
             Object o = jaxbElem.getValue();
-            // extract rules
-            if (o instanceof PolicyType) {
-                
-            }
-            else if (o instanceof PolicySetType) {
-                
+            // extract policies & policySets
+            if (o instanceof PolicyType || o instanceof PolicySetType) {
+                policies.add(o);
             }
             else if (o instanceof IdReferenceType) {
-                // TODO resolve policy or policySet and add them to the policy list.
+                // resolve policy or policySet and add them to the policy list.
+                Object ref = ((IdReferenceType)o).getPolicy();
+                if (ref == null) {
+                    // evaluate the IdReferenceType to resolve the referenced policy. The resolved policy will be populated to
+                    // the evaluating IdReferenceType instance.
+                    ref = EvaluatorFactory.getInstance().getEvaluator(o).evaluate(ctx);
+                }
+                policies.add(ref);
             }
-            // extract anb merge parameters
+            // extract and merge parameters
             else if (o instanceof CombinerParametersType) {
                 if (combinerParameters == null) {
                     combinerParameters = (CombinerParametersType)o;
@@ -136,47 +131,39 @@ public class PolicySetEvaluator implements Evaluator {
                     combinerParameters.getCombinerParameter().addAll(((CombinerParametersType)o).getCombinerParameter());
                 }
             }
-            // extract and merge rule parameters according to rule id
+            // extract and merge policy parameters according to policy id
             else if (o instanceof PolicyCombinerParametersType) {
-                // TODO make it as a common method then we can use it in PolicySetCombinerParameters
                 boolean merged = false;
-                for (RuleCombinerParametersType ruleParam : ruleCombinerParameters) {
-                    // if there is existing rule combiner parameters with same rule id in the list, we will merge them
+                for (PolicyCombinerParametersType policyParam : policyCombinerParameters) {
+                    // if there is existing policy combiner parameters with same policy id in the list, we will merge them
                     // together.
-                    if (((RuleCombinerParametersType)o).getRuleIdRef().equals(ruleParam.getRuleIdRef())) {
-                        ruleParam.getCombinerParameter().addAll(((RuleCombinerParametersType)o).getCombinerParameter());
+                    if (((PolicyCombinerParametersType)o).getPolicyIdRef().equals(policyParam.getPolicyIdRef())) {
+                        policyParam.getCombinerParameter().addAll(((PolicyCombinerParametersType)o).getCombinerParameter());
                         merged = true;
                         break;
                     }
                 }
                 // add as a new parameter
                 if (!merged) {
-                    ruleCombinerParameters.add((RuleCombinerParametersType)o);
+                    policyCombinerParameters.add((PolicyCombinerParametersType)o);
                 }
             }
             else if (o instanceof PolicySetCombinerParametersType) {
-                // TODO
-            }
-        }
-    }
-
-    /**
-     * Merge all policies to an array, and this array will be used for evaluation.
-     * @throws PolicySyntaxException 
-     */
-    private synchronized void mergePolicies() throws PolicySyntaxException {
-        if (allPolicies == null && all != null && all.size() > 0) {
-            allPolicies = new AbstractPolicy[all.size()];
-            int index = 0;
-            for (XACMLElement elem : all) {
-                if (elem instanceof AbstractPolicy) {
-                    allPolicies[index ++] = (AbstractPolicy)elem;
+                boolean merged = false;
+                for (PolicySetCombinerParametersType policySetParam : policySetCombinerParameters) {
+                    // if there is existing policy combiner parameters with same policy id in the list, we will merge them
+                    // together.
+                    if (((PolicySetCombinerParametersType)o).getPolicySetIdRef().equals(policySetParam.getPolicySetIdRef())) {
+                        policySetParam.getCombinerParameter().addAll(((PolicySetCombinerParametersType)o).getCombinerParameter());
+                        merged = true;
+                        break;
+                    }
                 }
-                else {
-                    allPolicies[index ++] = ((IdReference)elem).getPolicy();
+                // add as a new parameter
+                if (!merged) {
+                    policySetCombinerParameters.add((PolicySetCombinerParametersType)o);
                 }
             }
         }
     }
-
 }
