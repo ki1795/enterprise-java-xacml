@@ -190,6 +190,11 @@ public class EvaluationContext {
         }
     }
 
+    /**
+     * TODO Do not move this method, it should be left to context class
+     * @param attrId
+     * @return
+     */
     private AttributeValueType[] tryingGetDateTimeAttribute(URI attrId) {
         if (ATTR_TIME.equals(attrId)) {
             return new AttributeValueType[] {time};
@@ -308,6 +313,9 @@ public class EvaluationContext {
         }
     }
 
+    /**
+     * TODO should be moved to AttributeSelectorEvaluator class
+     */
     public static boolean isPolicyXPathVersionSupported(AbstractPolicy policy) throws IndeterminateException {
         URI xpathVer = policy.getXPathVersion();
         if (xpathVer != null) {
@@ -326,6 +334,9 @@ public class EvaluationContext {
         return false;
     }
 
+    /**
+     * TODO should be moved to AttributeDesignatorEvaluator class
+     */
     private static int getPossibleTypeOfAttributeId(String attrId) {
         if (attrId.startsWith(PREFIX_SUBJECT)) {
             return SUBJECT;

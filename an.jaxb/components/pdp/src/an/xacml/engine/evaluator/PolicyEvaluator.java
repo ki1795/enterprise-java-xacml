@@ -100,9 +100,11 @@ public class PolicyEvaluator implements Evaluator {
 
         List<Object> list = policy.getCombinerParametersOrRuleCombinerParametersOrVariableDefinition();
         for (Object o : list) {
+            // extract rules
         	if (o instanceof RuleType) {
         		rules.add((RuleType)o);
         	}
+        	// extract anb merge parameters
         	else if (o instanceof CombinerParametersType) {
         		if (combinerParameters == null) {
         			combinerParameters = (CombinerParametersType)o;
@@ -112,6 +114,7 @@ public class PolicyEvaluator implements Evaluator {
         			combinerParameters.getCombinerParameter().addAll(((CombinerParametersType)o).getCombinerParameter());
         		}
         	}
+        	// extract and merge rule parameters according to rule id
         	else if (o instanceof RuleCombinerParametersType) {
         		boolean merged = false;
         		for (RuleCombinerParametersType ruleParam : ruleCombinerParameters) {
