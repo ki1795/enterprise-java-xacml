@@ -248,6 +248,7 @@ public class PolicySetType {
     }
 
     /**
+     * FIXME should we validate the version format? I think JAXB might not check it
      * Gets the value of the version property.
      * 
      * @return

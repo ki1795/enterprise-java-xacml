@@ -50,6 +50,9 @@ public class PolicySetEvaluator implements Evaluator {
             previousPolicySet = ctx.setCurrentEvaluatingPolicy(policySet);
             initialize(ctx);
 
+            // validate policy and policySet combiner parameters
+            validatePolicyAndPolicySetCombinerParameters();
+
             if (EvaluatorFactory.getInstance().getMatcher(target).match(ctx)) {
                 if (policies.size() == 0) {
                     return ResultType.NOTAPPLICABLE;
@@ -91,6 +94,34 @@ public class PolicySetEvaluator implements Evaluator {
         }
         finally {
             ctx.setCurrentEvaluatingPolicy(previousPolicySet);
+        }
+    }
+
+    private void validatePolicyAndPolicySetCombinerParameters() throws IndeterminateException {
+        policy:
+        for (PolicyCombinerParametersType policyParams : policyCombinerParameters) {
+            for (Object policy : policies) {
+                if (policy instanceof PolicyType) {
+                    if (policyParams.getPolicyIdRef().equals(((PolicyType)policy).getPolicyId())) {
+                        continue policy;
+                    }
+                }
+            }
+            throw new IndeterminateException("The PolicyCombinerParameters doesn't have a matched policy id : " +
+                    policyParams.getPolicyIdRef(), Constants.STATUS_SYNTAXERROR);
+        }
+
+        policySet:
+        for (PolicySetCombinerParametersType policySetParams : policySetCombinerParameters) {
+            for (Object policySet : policies) {
+                if (policySet instanceof PolicySetType) {
+                    if (policySetParams.getPolicySetIdRef().equals(((PolicySetType)policySet).getPolicySetId())) {
+                        continue policySet;
+                    }
+                }
+            }
+            throw new IndeterminateException("The PolicySetCombinerParameters doesn't have a matched policySet id : " +
+                    policySetParams.getPolicySetIdRef(), Constants.STATUS_SYNTAXERROR);
         }
     }
 

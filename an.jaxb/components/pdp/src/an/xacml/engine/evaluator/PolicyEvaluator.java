@@ -97,10 +97,11 @@ public class PolicyEvaluator implements Evaluator {
     }
 
     private void validateRuleCombinerParameters() throws IndeterminateException {
+        rule:
         for (RuleCombinerParametersType ruleParams : ruleCombinerParameters) {
             for (RuleType rule : rules) {
                 if (ruleParams.getRuleIdRef().equals(rule.getRuleId())) {
-                    continue;
+                    continue rule;
                 }
             }
             throw new IndeterminateException("The RuleCombinerParameters doesn't have a matched rule id : " +
