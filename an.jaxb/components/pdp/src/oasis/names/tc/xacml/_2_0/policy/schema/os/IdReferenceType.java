@@ -61,8 +61,7 @@ public class IdReferenceType {
     }
 
     /**
-     * Internal use only. This value will be set while evaluating the element.
-     * @deprecated
+     * Internal use only. This value will be set after evaluation done.
      * @param policy
      */
     public void setPolicy(Object policy) {
