@@ -79,7 +79,7 @@ public class PolicyEvaluator implements Evaluator {
         catch (IndeterminateException ex) {
             throw ex;
         }
-        catch (Throwable t) {
+        catch (Exception t) {
             if (t instanceof InvocationTargetException) {
                 Throwable targetT = ((InvocationTargetException)t).getTargetException();
                 if (targetT instanceof IndeterminateException) {

@@ -11,10 +11,13 @@ import oasis.names.tc.xacml._2_0.policy.schema.os.AttributeValueType;
 import oasis.names.tc.xacml._2_0.policy.schema.os.EnvironmentMatchType;
 import oasis.names.tc.xacml._2_0.policy.schema.os.EnvironmentType;
 import oasis.names.tc.xacml._2_0.policy.schema.os.EnvironmentsType;
+import oasis.names.tc.xacml._2_0.policy.schema.os.IdReferenceType;
+import oasis.names.tc.xacml._2_0.policy.schema.os.PolicySetType;
 import oasis.names.tc.xacml._2_0.policy.schema.os.PolicyType;
 import oasis.names.tc.xacml._2_0.policy.schema.os.ResourceMatchType;
 import oasis.names.tc.xacml._2_0.policy.schema.os.ResourceType;
 import oasis.names.tc.xacml._2_0.policy.schema.os.ResourcesType;
+import oasis.names.tc.xacml._2_0.policy.schema.os.RuleType;
 import oasis.names.tc.xacml._2_0.policy.schema.os.SubjectMatchType;
 import oasis.names.tc.xacml._2_0.policy.schema.os.SubjectType;
 import oasis.names.tc.xacml._2_0.policy.schema.os.SubjectsType;
@@ -38,8 +41,13 @@ public class EvaluatorFactory {
         // register evaluators/matchers for XACML policy & context
         evaluatorReg.put(AttributeValueType.class, AttributeValueEvaluator.class);
         evaluatorReg.put(PolicyType.class, PolicyEvaluator.class);
+        evaluatorReg.put(PolicySetType.class, PolicySetEvaluator.class);
+        evaluatorReg.put(IdReferenceType.class, IdReferenceEvaluator.class);
+        evaluatorReg.put(RuleType.class, RuleEvaluatorAndMatcher.class);
 
         matcherReg.put(PolicyType.class, PolicyMatcher.class);
+        matcherReg.put(PolicySetType.class, PolicyMatcher.class);
+        matcherReg.put(RuleType.class, RuleEvaluatorAndMatcher.class);
         matcherReg.put(ActionType.class, TargetMatcher.class);
         matcherReg.put(EnvironmentType.class, TargetMatcher.class);
         matcherReg.put(ResourceType.class, TargetMatcher.class);

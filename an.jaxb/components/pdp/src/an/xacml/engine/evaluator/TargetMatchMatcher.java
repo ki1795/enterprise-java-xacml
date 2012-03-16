@@ -67,12 +67,9 @@ public class TargetMatchMatcher implements Matcher {
             throw ex;
         }
         catch (Exception e) {
-            throw new IndeterminateException("The function is failed to evaluating: ", e,
+            // TODO invocationTarget exception
+            throw new IndeterminateException("The match operation failed due to error: ", e,
                     Constants.STATUS_PROCESSINGERROR);
-        }
-        catch (Throwable t) {
-            throw new IndeterminateException("The match operation failed due to error: ", t,
-                    Constants.STATUS_SYNTAXERROR);
         }
     }
 

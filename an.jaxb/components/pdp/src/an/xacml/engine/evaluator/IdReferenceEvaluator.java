@@ -3,11 +3,12 @@ package an.xacml.engine.evaluator;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import deprecated.an.xacml.policy.AbstractPolicy;
-import deprecated.an.xacml.policy.Version;
 import oasis.names.tc.xacml._2_0.policy.schema.os.IdReferenceType;
+import oasis.names.tc.xacml._2_0.policy.schema.os.PolicyType;
+import an.log.LogFactory;
+import an.log.Logger;
+import an.xacml.Constants;
 import an.xacml.IndeterminateException;
-import an.xacml.PolicySyntaxException;
 import an.xacml.engine.PDP;
 import an.xacml.engine.PolicyResolver;
 import an.xacml.engine.PolicyResolverRegistry;
@@ -20,12 +21,16 @@ public class IdReferenceEvaluator implements Evaluator {
     private String version;
     private String earliestVersion;
     private String latestVersion;
+    private Logger logger;
 
     // Seems JAXB does NOT check the format of VersionMatchType, so we do the validation by ourselves.
     public static final String VERSIONMATCH_PATTERN = "((\\d+|\\*)\\.)*(\\d+|\\*|\\+)";
     public static final String GET_VERSION = "getVersion";
+    public static final String GET_POLICY_ID = "getPolicyId";
+    public static final String GET_POLICYSET_ID = "getPolicySetId";
 
     public IdReferenceEvaluator(Object idRef) {
+        logger = LogFactory.getLogger();
         this.idRef = (IdReferenceType)idRef;
 
         id = this.idRef.getValue();
@@ -59,39 +64,62 @@ public class IdReferenceEvaluator implements Evaluator {
 
     @Override
     public Object evaluate(EvaluationContext ctx) throws IndeterminateException {
-        // TODO resolve the referenced policy or policySet and then set it back to IdReferenceType
-        PDP pdp = ctx.getPDP();
-        if (pdp != null) {
-            PolicyResolverRegistry reg = PolicyResolverRegistry.getInstance(pdp);
-            PolicyResolver[] resolvers = reg.getAllPolicyResolvers();
-            for (PolicyResolver resolver : resolvers) {
-                if (resolver.isPolicySupported(id)) {
-                    Object resolved = resolver.resolvePolicy(id);
-                    if (resolved != null && validateResolvedPolicy(resolved)) {
-                        resolved.setParentElement(getParentElement());
-                        policy = resolved;
-                        break;
-                    }
-                    else {
-                        logger.warn("The policy resolved by " + resolver.getClass().getSimpleName() +
-                                (resolved == null ?
-                                 " is null." : " doesn't match the IdReference. Will try next resolver."));
+        try {
+            // resolve the referenced policy or policySet and then set it back to IdReferenceType
+            PDP pdp = ctx.getPDP();
+            if (pdp != null) {
+                PolicyResolverRegistry reg = PolicyResolverRegistry.getInstance(pdp);
+                PolicyResolver[] resolvers = reg.getAllPolicyResolvers();
+                for (PolicyResolver resolver : resolvers) {
+                    if (resolver.isPolicySupported(id)) {
+                        Object resolved = resolver.resolvePolicy(id);
+                        if (resolved != null && validateResolvedPolicy(resolved)) {
+                            idRef.setPolicy(resolved);
+                            break;
+                        }
+                        else {
+                            logger.warn("The policy resolved by " + resolver.getClass().getSimpleName() +
+                                    (resolved == null ? " is null." : " doesn't match the IdReference. Will try next resolver."));
+                        }
                     }
                 }
             }
-        }
-        if (policy == null) {
-            throw new PolicySyntaxException("Could not resolve policy using the given id: " + id);
-        }
+            if (idRef.getPolicy() == null) {
+                throw new IndeterminateException("Could not resolve policy using the given id: " + id, Constants.STATUS_SYNTAXERROR);
+            }
+    
+            if (!id.equals(getPolicyOrPolicySetId(idRef.getPolicy()))) {
+                throw new IndeterminateException(
+                        "The referenced policy's ID does not match the expected.", Constants.STATUS_SYNTAXERROR);
+            }
 
-        if (!id.equals(policy.getId())) {
-            throw new PolicySyntaxException("The referenced policy's ID does not match the expected.");
+            return idRef.getPolicy();
         }
+        catch (IndeterminateException iEx) {
+            throw iEx;
+        }
+        catch (Exception t) {
+            if (t instanceof InvocationTargetException) {
+                Throwable targetT = ((InvocationTargetException)t).getTargetException();
+                if (targetT instanceof IndeterminateException) {
+                    throw (IndeterminateException)targetT;
+                }
+            }
+            throw new IndeterminateException("Error occurs while evaluating Policy.", t, Constants.STATUS_SYNTAXERROR);
+        }
+    }
 
-        if (!validateResolvedPolicy(policy)) {
-            throw new PolicySyntaxException("The referenced policy's version does not match the expected.");
+    private String getPolicyOrPolicySetId(Object policy) throws SecurityException, NoSuchMethodException, 
+    IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+        String getIdMethodName = null;
+        if (policy instanceof PolicyType) {
+            getIdMethodName = GET_POLICY_ID;
         }
-        return null;
+        else {
+            getIdMethodName = GET_POLICYSET_ID;
+        }
+        Method getIdMethod = policy.getClass().getMethod(getIdMethodName);
+        return (String)getIdMethod.invoke(policy);
     }
 
     private boolean validateResolvedPolicy(Object policy) throws Exception {

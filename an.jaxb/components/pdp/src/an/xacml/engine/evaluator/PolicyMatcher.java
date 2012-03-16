@@ -19,7 +19,7 @@ public class PolicyMatcher implements Matcher {
 
     @Override
     public boolean match(EvaluationContext ctx) throws IndeterminateException {
-        ctx.setCurrentEvaluatingPolicy(policy);
+        Object previousPolicySet = ctx.setCurrentEvaluatingPolicy(policy);
 
         try {
             Class<?> claz = policy.getClass();
@@ -32,13 +32,12 @@ public class PolicyMatcher implements Matcher {
         catch (IndeterminateException iEx) {
             throw iEx;
         }
-        catch (Exception e) {
-            throw new IndeterminateException("The match operation failed due to error: ", e,
-                    Constants.STATUS_PROCESSINGERROR);
-        }
         catch (Throwable t) {
             throw new IndeterminateException("The match operation failed due to error: ", t,
                     Constants.STATUS_SYNTAXERROR);
+        }
+        finally {
+            ctx.setCurrentEvaluatingPolicy(previousPolicySet);
         }
     }
 }
