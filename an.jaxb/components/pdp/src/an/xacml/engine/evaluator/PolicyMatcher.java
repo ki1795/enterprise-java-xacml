@@ -1,5 +1,6 @@
 package an.xacml.engine.evaluator;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import an.xacml.Constants;
@@ -32,9 +33,14 @@ public class PolicyMatcher implements Matcher {
         catch (IndeterminateException iEx) {
             throw iEx;
         }
-        catch (Throwable t) {
-            throw new IndeterminateException("The match operation failed due to error: ", t,
-                    Constants.STATUS_SYNTAXERROR);
+        catch (Exception t) {
+            if (t instanceof InvocationTargetException) {
+                Throwable targetT = ((InvocationTargetException)t).getTargetException();
+                if (targetT instanceof IndeterminateException) {
+                    throw (IndeterminateException)targetT;
+                }
+            }
+            throw new IndeterminateException("The match operation failed due to error: ", t, Constants.STATUS_SYNTAXERROR);
         }
         finally {
             ctx.setCurrentEvaluatingPolicy(previousPolicySet);

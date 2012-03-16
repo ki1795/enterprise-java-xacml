@@ -3,6 +3,7 @@ package an.xacml.engine.evaluator;
 import static an.xacml.engine.ctx.FunctionRegistry.getInstance;
 import static oasis.names.tc.xacml._2_0.policy.schema.os.AttributeValueType.TRUE;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import oasis.names.tc.xacml._2_0.policy.schema.os.ActionMatchType;
@@ -66,10 +67,14 @@ public class TargetMatchMatcher implements Matcher {
         catch (IndeterminateException ex) {
             throw ex;
         }
-        catch (Exception e) {
-            // TODO invocationTarget exception
-            throw new IndeterminateException("The match operation failed due to error: ", e,
-                    Constants.STATUS_PROCESSINGERROR);
+        catch (Exception t) {
+            if (t instanceof InvocationTargetException) {
+                Throwable targetT = ((InvocationTargetException)t).getTargetException();
+                if (targetT instanceof IndeterminateException) {
+                    throw (IndeterminateException)targetT;
+                }
+            }
+            throw new IndeterminateException("The match operation failed due to error: ", t, Constants.STATUS_SYNTAXERROR);
         }
     }
 

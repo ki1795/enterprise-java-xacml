@@ -1,5 +1,6 @@
 package an.xacml.engine.evaluator;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,10 +50,14 @@ public class TargetMatcher implements Matcher {
         catch (IndeterminateException e) {
             throw e;
         }
-        catch (Exception e) {
-            // TODO invocationTarget exception
-            throw new IndeterminateException("The match operation failed due to error: ", e,
-                    Constants.STATUS_PROCESSINGERROR);
+        catch (Exception t) {
+            if (t instanceof InvocationTargetException) {
+                Throwable targetT = ((InvocationTargetException)t).getTargetException();
+                if (targetT instanceof IndeterminateException) {
+                    throw (IndeterminateException)targetT;
+                }
+            }
+            throw new IndeterminateException("The match operation failed due to error: ", t, Constants.STATUS_SYNTAXERROR);
         }
     }
 

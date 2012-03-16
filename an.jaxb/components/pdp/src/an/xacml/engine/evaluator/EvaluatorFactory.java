@@ -4,10 +4,15 @@ import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
 
+import deprecated.an.xacml.policy.AttributeDesignator;
+import deprecated.an.xacml.policy.AttributeSelector;
+import deprecated.an.xacml.policy.SubjectAttributeDesignator;
+
 import oasis.names.tc.xacml._2_0.policy.schema.os.ActionMatchType;
 import oasis.names.tc.xacml._2_0.policy.schema.os.ActionType;
 import oasis.names.tc.xacml._2_0.policy.schema.os.ActionsType;
 import oasis.names.tc.xacml._2_0.policy.schema.os.AttributeValueType;
+import oasis.names.tc.xacml._2_0.policy.schema.os.ConditionType;
 import oasis.names.tc.xacml._2_0.policy.schema.os.EnvironmentMatchType;
 import oasis.names.tc.xacml._2_0.policy.schema.os.EnvironmentType;
 import oasis.names.tc.xacml._2_0.policy.schema.os.EnvironmentsType;
@@ -44,6 +49,10 @@ public class EvaluatorFactory {
         evaluatorReg.put(PolicySetType.class, PolicySetEvaluator.class);
         evaluatorReg.put(IdReferenceType.class, IdReferenceEvaluator.class);
         evaluatorReg.put(RuleType.class, RuleEvaluatorAndMatcher.class);
+        evaluatorReg.put(ConditionType.class, ConditionEvaluator.class);
+        evaluatorReg.put(AttributeDesignator.class, AttributeDesignatorEvaluator.class);
+        evaluatorReg.put(SubjectAttributeDesignator.class, ConditionEvaluator.class);
+        evaluatorReg.put(AttributeSelector.class, AttributeSelectorEvaluator.class);
 
         matcherReg.put(PolicyType.class, PolicyMatcher.class);
         matcherReg.put(PolicySetType.class, PolicyMatcher.class);
