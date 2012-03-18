@@ -52,9 +52,9 @@ public abstract interface Constants {
     public static final String STATUS_SERVERERROR = "an:xacml:2.0:status:server-error";
     public static final String STATUS_UNKNOWNERROR = "an:xacml:2.0:status:unknown-error";
     // Environment attributes
-    public static final URI ATTR_TIME = URI.create("urn:oasis:names:tc:xacml:1.0:environment:current-time");
-    public static final URI ATTR_DATE = URI.create("urn:oasis:names:tc:xacml:1.0:environment:current-date");
-    public static final URI ATTR_DATETIME = URI.create("urn:oasis:names:tc:xacml:1.0:environment:current-dateTime");
+    public static final String ATTR_TIME = "urn:oasis:names:tc:xacml:1.0:environment:current-time";
+    public static final String ATTR_DATE = "urn:oasis:names:tc:xacml:1.0:environment:current-date";
+    public static final String ATTR_DATETIME = "urn:oasis:names:tc:xacml:1.0:environment:current-dateTime";
     // Reserved identifiers
     public static final URI ATTR_DNSNAME = URI.create("urn:oasis:names:tc:xacml:1.0:subject:authn-locality:dns-name");
     public static final URI ATTR_IPADDRESS = URI.create("urn:oasis:names:tc:xacml:1.0:subject:authn-locality:ip-address");

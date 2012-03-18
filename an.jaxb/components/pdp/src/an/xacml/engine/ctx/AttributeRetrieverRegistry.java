@@ -3,8 +3,10 @@ package an.xacml.engine.ctx;
 import static an.xacml.engine.ctx.AttributeRetriever.ANY;
 
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -101,11 +103,15 @@ public class AttributeRetrieverRegistry {
         }
     }
 
-    public AttributeRetriever[] getAllAttributeRetrievers() {
-        return attrRetrieversReg[ANY].toArray(new AttributeRetriever[0]);
+    public List<AttributeRetriever> getAllAttributeRetrievers() {
+        List<AttributeRetriever> result = new ArrayList<AttributeRetriever>();
+        result.addAll(attrRetrieversReg[ANY]);
+        return result;
     }
 
-    public AttributeRetriever[] getAttributeRetrieversByType(int type) {
-        return attrRetrieversReg[type].toArray(new AttributeRetriever[0]);
+    public List<AttributeRetriever> getAttributeRetrieversByType(int type) {
+        List<AttributeRetriever> result = new ArrayList<AttributeRetriever>();
+        result.addAll(attrRetrieversReg[type]);
+        return result;
     }
 }

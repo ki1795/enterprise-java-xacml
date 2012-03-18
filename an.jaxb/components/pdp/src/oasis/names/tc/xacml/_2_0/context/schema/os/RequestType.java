@@ -56,6 +56,8 @@ public class RequestType {
     @XmlElement(name = "Environment", namespace = "urn:oasis:names:tc:xacml:2.0:context:schema:os", required = true)
     protected EnvironmentType environment;
 
+    private List<Object> merged;
+
     /**
      * Gets the value of the subject property.
      * 
@@ -162,4 +164,14 @@ public class RequestType {
         this.environment = value;
     }
 
+    /**
+     * We merged all target elements together in EvaluationContext for convenience.
+     * @return
+     */
+    public List<Object> getMergedTargetElements() {
+        if (merged == null) {
+            merged = new ArrayList<Object>();
+        }
+        return this.merged;
+    }
 }

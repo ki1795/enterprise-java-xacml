@@ -1,11 +1,11 @@
 package an.xacml.engine.ctx;
 
-import java.net.URI;
+import java.util.List;
 import java.util.Map;
 
-import org.w3c.dom.Element;
+import oasis.names.tc.xacml._2_0.policy.schema.os.AttributeValueType;
 
-import deprecated.an.xacml.policy.AttributeValue;
+import org.w3c.dom.Element;
 
 import an.xacml.IndeterminateException;
 
@@ -57,29 +57,30 @@ public interface AttributeRetriever {
      * @param dataType
      * @return
      */
-    public boolean isAttributeSupported(URI attrId, URI dataType);
+    public boolean isAttributeSupported(String attrId, String dataType);
 
     /**
-     * This method is used by attribute designator to retrieve external attribtues.
+     * This method is used by attribute designator to retrieve external attributes.
      * @param attrId
      * @param dataType
      * @param issuer
      * @param subjCategory
      * @return
      */
-    public AttributeValue[] retrieveAttributeValues(EvaluationContext context,
-            URI attrId, URI dataType, String issuer, URI subjCategory)
+    public List<AttributeValueType> retrieveAttributeValues(EvaluationContext context,
+            String attrId, String dataType, String issuer, String subjCategory)
     throws IndeterminateException;
 
     /**
-     * This method is used by attribute selector to retrieve external attribtues.
+     * FIXME
+     * This method is used by attribute selector to retrieve external attributes.
      * @param requestCtxPath
      * @param dataType
      * @param request
      * @param additionalNSMappings
      * @return
      */
-    public AttributeValue[] retrieveAttributeValues(EvaluationContext context, 
-            String requestCtxPath, URI dataType, Element request, Map<String, String> additionalNSMappings)
+    public List<AttributeValueType> retrieveAttributeValues(EvaluationContext context, 
+            String requestCtxPath, String dataType, Element request, Map<String, String> additionalNSMappings)
     throws IndeterminateException;
 }
