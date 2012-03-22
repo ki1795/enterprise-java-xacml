@@ -79,7 +79,7 @@ public abstract interface Constants {
     public static final String TYPE_TIME = XMLDataTypeRegistry.XMLTypeAsString(TIME);
     public static final String TYPE_DATE = XMLDataTypeRegistry.XMLTypeAsString(DATE);
     public static final String TYPE_DATETIME = XMLDataTypeRegistry.XMLTypeAsString(DATETIME);
-    public static final URI TYPE_STRING = URI.create("http://www.w3.org/2001/XMLSchema#string");
+    public static final String TYPE_STRING = "http://www.w3.org/2001/XMLSchema#string";
     public static final String TYPE_BOOLEAN = "http://www.w3.org/2001/XMLSchema#boolean";
     public static final URI TYPE_INTEGER = URI.create("http://www.w3.org/2001/XMLSchema#integer");
     public static final URI TYPE_DOUBLE = URI.create("http://www.w3.org/2001/XMLSchema#double");

@@ -3,9 +3,10 @@ package an.xacml.engine.ctx;
 import java.util.List;
 import java.util.Map;
 
+import org.w3c.dom.Node;
+
 import oasis.names.tc.xacml._2_0.policy.schema.os.AttributeValueType;
 
-import org.w3c.dom.Element;
 
 import an.xacml.IndeterminateException;
 
@@ -81,6 +82,6 @@ public interface AttributeRetriever {
      * @return
      */
     public List<AttributeValueType> retrieveAttributeValues(EvaluationContext context, 
-            String requestCtxPath, String dataType, Element request, Map<String, String> additionalNSMappings)
+            String requestCtxPath, String dataType, Node request, Map<String, String> additionalNSMappings)
     throws IndeterminateException;
 }

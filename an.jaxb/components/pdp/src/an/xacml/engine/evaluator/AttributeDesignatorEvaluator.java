@@ -88,6 +88,7 @@ public class AttributeDesignatorEvaluator implements Evaluator {
                 missing.setDataType(this.dataType);
                 missing.setIssuer(this.issuer);
                 List<MissingAttributeDetailType> missingAttrs = new ArrayList<MissingAttributeDetailType>();
+                missingAttrs.add(missing);
 
                 ex.setAttachedObject(missingAttrs);
                 throw ex;

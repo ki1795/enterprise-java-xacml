@@ -33,7 +33,7 @@ public abstract class DataStoreHelper {
      * @throws ConfigurationException
      * @throws XMLGeneralException 
      */
-    public static synchronized DataStore getDataStore(PDP pdp) throws ConfigurationException, XMLGeneralException {
+    public static synchronized DataStore getDataStore(PDP pdp) throws ConfigurationException {
         DataStore ds = (DataStore)dsRegistry.get(pdp);
 
         if (ds == null) {

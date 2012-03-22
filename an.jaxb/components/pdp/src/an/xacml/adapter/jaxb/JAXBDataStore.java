@@ -1,9 +1,8 @@
-package deprecateed.an.xacml.adapter.file;
+package an.xacml.adapter.jaxb;
 
 import static an.xml.XMLParserWrapper.getNodeXMLText;
 import static an.xml.XMLParserWrapper.parse;
 import static an.xml.XMLParserWrapper.verifySchemaFile;
-import static deprecateed.an.xacml.adapter.file.XACMLParser.createPolicyDataAdapterFromXMLElement;
 import static deprecateed.an.xacml.adapter.file.XACMLParser.dumpPolicy;
 import static deprecateed.an.xacml.adapter.file.XACMLParser.getPolicyDefaultSchema;
 
@@ -21,10 +20,6 @@ import java.util.Vector;
 
 import org.w3c.dom.Element;
 
-import deprecated.an.xacml.policy.AbstractPolicy;
-import deprecateed.an.xacml.adapter.DataAdapter;
-import deprecateed.an.xacml.adapter.DataAdapterException;
-
 import an.config.ConfigElement;
 import an.config.ConfigurationException;
 import an.log.LogFactory;
@@ -36,12 +31,15 @@ import an.xacml.engine.DataStore;
 import an.xacml.engine.DataStoreHelper;
 import an.xacml.engine.PDP;
 import an.xml.XMLGeneralException;
+import deprecated.an.xacml.policy.AbstractPolicy;
+import deprecateed.an.xacml.adapter.DataAdapter;
+import deprecateed.an.xacml.adapter.DataAdapterException;
 
 /**
  * The default implementation of DataStore, if "an.xacml.engine.DataStore"
  * is not configured, this defult DataStore will be used.
  */
-public class XMLFileDataStore implements DataStore {
+public class JAXBDataStore implements DataStore {
     private String path;
     private String pattern;
     private Logger logger;
@@ -56,7 +54,7 @@ public class XMLFileDataStore implements DataStore {
     public static final String ATTR_POLICY_PATH = "path";
     static final String ATTR_FILENAME_PATTERN = "pattern";
 
-    public XMLFileDataStore(ConfigElement config) {
+    public JAXBDataStore(ConfigElement config) {
         logger = LogFactory.getLogger();
         loadConfigurations(config);
     }
@@ -65,6 +63,7 @@ public class XMLFileDataStore implements DataStore {
         path = (String)config.getAttributeValueByName(ATTR_POLICY_PATH);
         pattern = (String)config.getAttributeValueByName(ATTR_FILENAME_PATTERN);
     }
+
     /**
      * Load all policies from a specific path, return an Iterator of DataAdapter, caller may call 
      * DataAdapter.getEngineElement method to get the corresponding engine element which is going to be evaluated.

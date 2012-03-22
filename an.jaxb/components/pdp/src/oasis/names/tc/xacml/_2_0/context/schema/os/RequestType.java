@@ -13,7 +13,10 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
+
+import org.w3c.dom.Node;
 
 
 /**
@@ -56,7 +59,11 @@ public class RequestType {
     @XmlElement(name = "Environment", namespace = "urn:oasis:names:tc:xacml:2.0:context:schema:os", required = true)
     protected EnvironmentType environment;
 
+    @XmlTransient
     private List<Object> merged;
+
+    @XmlTransient
+    private Node xmlNode;
 
     /**
      * Gets the value of the subject property.
@@ -173,5 +180,19 @@ public class RequestType {
             merged = new ArrayList<Object>();
         }
         return this.merged;
+    }
+
+    /**
+     * TODO While parsing request from XML document, we should attach the corresponding XML node to the request to support XPath
+     * evaluation of AttributeSelector. If the request is not come from XML document, we need to get a Binder from the
+     * EvaluationContext and generate the XML node for request.
+     * @return
+     */
+    public Node getXmlNode() {
+        return xmlNode;
+    }
+
+    public void setXmlNode(Node node) {
+        this.xmlNode = node;
     }
 }

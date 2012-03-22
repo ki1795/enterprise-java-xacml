@@ -4,18 +4,18 @@ import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
 
-import deprecated.an.xacml.policy.AttributeDesignator;
-import deprecated.an.xacml.policy.AttributeSelector;
-import deprecated.an.xacml.policy.SubjectAttributeDesignator;
-
 import oasis.names.tc.xacml._2_0.policy.schema.os.ActionMatchType;
 import oasis.names.tc.xacml._2_0.policy.schema.os.ActionType;
 import oasis.names.tc.xacml._2_0.policy.schema.os.ActionsType;
+import oasis.names.tc.xacml._2_0.policy.schema.os.ApplyType;
+import oasis.names.tc.xacml._2_0.policy.schema.os.AttributeDesignatorType;
+import oasis.names.tc.xacml._2_0.policy.schema.os.AttributeSelectorType;
 import oasis.names.tc.xacml._2_0.policy.schema.os.AttributeValueType;
 import oasis.names.tc.xacml._2_0.policy.schema.os.ConditionType;
 import oasis.names.tc.xacml._2_0.policy.schema.os.EnvironmentMatchType;
 import oasis.names.tc.xacml._2_0.policy.schema.os.EnvironmentType;
 import oasis.names.tc.xacml._2_0.policy.schema.os.EnvironmentsType;
+import oasis.names.tc.xacml._2_0.policy.schema.os.FunctionType;
 import oasis.names.tc.xacml._2_0.policy.schema.os.IdReferenceType;
 import oasis.names.tc.xacml._2_0.policy.schema.os.PolicySetType;
 import oasis.names.tc.xacml._2_0.policy.schema.os.PolicyType;
@@ -23,6 +23,7 @@ import oasis.names.tc.xacml._2_0.policy.schema.os.ResourceMatchType;
 import oasis.names.tc.xacml._2_0.policy.schema.os.ResourceType;
 import oasis.names.tc.xacml._2_0.policy.schema.os.ResourcesType;
 import oasis.names.tc.xacml._2_0.policy.schema.os.RuleType;
+import oasis.names.tc.xacml._2_0.policy.schema.os.SubjectAttributeDesignatorType;
 import oasis.names.tc.xacml._2_0.policy.schema.os.SubjectMatchType;
 import oasis.names.tc.xacml._2_0.policy.schema.os.SubjectType;
 import oasis.names.tc.xacml._2_0.policy.schema.os.SubjectsType;
@@ -50,9 +51,11 @@ public class EvaluatorFactory {
         evaluatorReg.put(IdReferenceType.class, IdReferenceEvaluator.class);
         evaluatorReg.put(RuleType.class, RuleEvaluatorAndMatcher.class);
         evaluatorReg.put(ConditionType.class, ConditionEvaluator.class);
-        evaluatorReg.put(AttributeDesignator.class, AttributeDesignatorEvaluator.class);
-        evaluatorReg.put(SubjectAttributeDesignator.class, ConditionEvaluator.class);
-        evaluatorReg.put(AttributeSelector.class, AttributeSelectorEvaluator.class);
+        evaluatorReg.put(AttributeDesignatorType.class, AttributeDesignatorEvaluator.class);
+        evaluatorReg.put(SubjectAttributeDesignatorType.class, ConditionEvaluator.class);
+        evaluatorReg.put(AttributeSelectorType.class, AttributeSelectorEvaluator.class);
+        evaluatorReg.put(ApplyType.class, ApplyEvaluator.class);
+        evaluatorReg.put(FunctionType.class, FunctionEvaluator.class);
 
         matcherReg.put(PolicyType.class, PolicyMatcher.class);
         matcherReg.put(PolicySetType.class, PolicyMatcher.class);

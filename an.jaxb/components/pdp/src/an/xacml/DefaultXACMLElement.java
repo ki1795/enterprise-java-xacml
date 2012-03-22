@@ -19,6 +19,7 @@ import an.datatype.ipAddress;
 import an.datatype.rfc822Name;
 
 /**
+ * @deprecated
  * Provide a default getVersion implementation.
  */
 public abstract class DefaultXACMLElement implements XACMLElement {

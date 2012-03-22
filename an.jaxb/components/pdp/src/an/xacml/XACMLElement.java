@@ -1,6 +1,7 @@
 package an.xacml;
 
 /**
+ * @deprecated
  * This is the root interface of all XACML elements.
  */
 public interface XACMLElement {

@@ -90,6 +90,7 @@ public class PDP extends AbstractMonitorableAndControllable {
         domain = (String)config.getAttributeValueByName(ATTR_DOMAINNAME);
         multiPoliciesCombineAlg = (URI)config.getAttributeValueByName(ATTR_MULTIPOLICYCOMBALG);
         supportMustBePresent = (Boolean)config.getAttributeValueByName(ATTR_MUSTBEPRESENT);
+        // FIXME should we remove support inner expression option?
         supportInnerExpression = (Boolean)config.getAttributeValueByName(ATTR_INNEREXPRESSION);
         resolveReferencedPoliciesOnLoad = (Boolean)config.getAttributeValueByName(ATTR_RESOLVEPOLICY);
         dsConfig = (ConfigElement)config.getSingleXMLElementByType(ELEMTYPE_DATASTORE);

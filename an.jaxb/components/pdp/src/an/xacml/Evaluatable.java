@@ -4,6 +4,7 @@ import deprecated.an.xacml.context.Result;
 import an.xacml.engine.ctx.EvaluationContext;
 
 /**
+ * @deprecated
  * All evaluatable, PolicySet, Policy and Rule, must implement the interface.
  */
 public interface Evaluatable {
