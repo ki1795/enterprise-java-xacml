@@ -8,6 +8,7 @@ import oasis.names.tc.xacml._2_0.policy.schema.os.ActionMatchType;
 import oasis.names.tc.xacml._2_0.policy.schema.os.ActionType;
 import oasis.names.tc.xacml._2_0.policy.schema.os.ActionsType;
 import oasis.names.tc.xacml._2_0.policy.schema.os.ApplyType;
+import oasis.names.tc.xacml._2_0.policy.schema.os.AttributeAssignmentType;
 import oasis.names.tc.xacml._2_0.policy.schema.os.AttributeDesignatorType;
 import oasis.names.tc.xacml._2_0.policy.schema.os.AttributeSelectorType;
 import oasis.names.tc.xacml._2_0.policy.schema.os.AttributeValueType;
@@ -28,7 +29,10 @@ import oasis.names.tc.xacml._2_0.policy.schema.os.SubjectMatchType;
 import oasis.names.tc.xacml._2_0.policy.schema.os.SubjectType;
 import oasis.names.tc.xacml._2_0.policy.schema.os.SubjectsType;
 import oasis.names.tc.xacml._2_0.policy.schema.os.TargetType;
+import oasis.names.tc.xacml._2_0.policy.schema.os.VariableDefinitionType;
+import oasis.names.tc.xacml._2_0.policy.schema.os.VariableReferenceType;
 
+//FIXME which object should we add an equals method on?
 /**
  * We register evaluator and matcher for XACML elements to this factory class.
  */
@@ -46,6 +50,7 @@ public class EvaluatorFactory {
     private EvaluatorFactory() {
         // register evaluators/matchers for XACML policy & context
         evaluatorReg.put(AttributeValueType.class, AttributeValueEvaluator.class);
+        evaluatorReg.put(AttributeAssignmentType.class, AttributeValueEvaluator.class);
         evaluatorReg.put(PolicyType.class, PolicyEvaluator.class);
         evaluatorReg.put(PolicySetType.class, PolicySetEvaluator.class);
         evaluatorReg.put(IdReferenceType.class, IdReferenceEvaluator.class);
@@ -56,6 +61,8 @@ public class EvaluatorFactory {
         evaluatorReg.put(AttributeSelectorType.class, AttributeSelectorEvaluator.class);
         evaluatorReg.put(ApplyType.class, ApplyEvaluator.class);
         evaluatorReg.put(FunctionType.class, FunctionEvaluator.class);
+        evaluatorReg.put(VariableDefinitionType.class, VariableDefinitionEvaluator.class);
+        evaluatorReg.put(VariableReferenceType.class, VariableReferenceEvaluator.class);
 
         matcherReg.put(PolicyType.class, PolicyMatcher.class);
         matcherReg.put(PolicySetType.class, PolicyMatcher.class);

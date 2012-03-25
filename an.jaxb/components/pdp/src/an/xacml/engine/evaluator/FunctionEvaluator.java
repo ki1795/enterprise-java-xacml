@@ -32,5 +32,4 @@ public class FunctionEvaluator implements Evaluator {
                     Constants.STATUS_SYNTAXERROR);
         }
     }
-
 }

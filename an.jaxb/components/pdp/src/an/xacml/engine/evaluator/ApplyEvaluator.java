@@ -1,6 +1,7 @@
 package an.xacml.engine.evaluator;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.JAXBElement;
@@ -17,12 +18,11 @@ public class ApplyEvaluator implements Evaluator {
 
     private ApplyType apply;
     private String functionId;
-    private List<JAXBElement<?>> expressions;
+    private List<Object> expressions = new ArrayList<Object>();
 
     public ApplyEvaluator(Object apply) {
         this.apply = (ApplyType)apply;
-        functionId = this.apply.getFunctionId();
-        expressions = this.apply.getExpression();
+        initialize();
     }
 
     @Override
@@ -65,6 +65,14 @@ public class ApplyEvaluator implements Evaluator {
         catch (Exception t) {
             throw new IndeterminateException("Error occurs while evaluating Apply element.", t, 
                     Constants.STATUS_PROCESSINGERROR);
+        }
+    }
+
+    private void initialize() {
+        functionId = this.apply.getFunctionId();
+        List<JAXBElement<?>> jaxbExps = this.apply.getExpression();
+        for (JAXBElement<?> elem : jaxbExps) {
+            expressions.add(elem.getValue());
         }
     }
 
