@@ -5,12 +5,16 @@ import static an.xacml.Constants.SUPPORTED_XPATH_VERSIONS;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.XMLConstants;
 import javax.xml.bind.Binder;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import javax.xml.namespace.NamespaceContext;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
@@ -32,6 +36,7 @@ import an.xacml.Constants;
 import an.xacml.engine.AttributeRetriever;
 import an.xacml.engine.AttributeRetrieverRegistry;
 import an.xacml.engine.IndeterminateException;
+import an.xacml.engine.PolicyNamespaceResolver;
 import an.xacml.engine.impl.EvaluationContext;
 import an.xml.XMLDataTypeMappingException;
 
@@ -46,6 +51,7 @@ public class AttributeSelectorEvaluator implements Evaluator {
     
     private static XPathFactory xpathFactory = XPathFactory.newInstance();
     private XPath xpath = xpathFactory.newXPath();
+    private NamespaceContext xpathCtx = null;
 
     public final static String GET_POLICY_DEFAULTS = "getPolicyDefaults";
     public final static String GET_POLICYSET_DEFAULTS = "getPolicySetDefaults";
@@ -116,6 +122,8 @@ public class AttributeSelectorEvaluator implements Evaluator {
             Object root = ctx.getCurrentEvaluatingPolicy();
             if (root != null) {
                 isPolicyXPathVersionSupported(root);
+                // add policy level namespace mappings to xpath evaluator
+                pushPolicyNamespaceContext(root);
                 nList = (NodeList)xpath.evaluate(
                         requestCtxPath, getXmlNodeFromRequest(ctx), XPathConstants.NODESET);
 
@@ -158,6 +166,25 @@ public class AttributeSelectorEvaluator implements Evaluator {
             throw new IndeterminateException("Error occurs while evaluating AttributeSelector.", t, 
                     Constants.STATUS_SYNTAXERROR);
         }
+        finally {
+            popPolicyNamespaceContext();
+        }
+    }
+
+    private void pushPolicyNamespaceContext(Object policy) throws Exception {
+        NamespaceContextProvider nsCtx = new NamespaceContextProvider();
+        Map<String, String> nsMap = ((PolicyNamespaceResolver)policy).getNamespaceMappings();
+        Iterator<String> keys = nsMap.keySet().iterator();
+        while (keys.hasNext()) {
+            String key = keys.next();
+            nsCtx.addNSMapping(key, nsMap.get(key));
+        }
+        xpathCtx = xpath.getNamespaceContext();
+        xpath.setNamespaceContext(nsCtx);
+    }
+
+    private void popPolicyNamespaceContext() {
+        xpath.setNamespaceContext(xpathCtx);
     }
 
     public static boolean isPolicyXPathVersionSupported(Object policy) throws IndeterminateException {
@@ -217,15 +244,8 @@ public class AttributeSelectorEvaluator implements Evaluator {
             AttributeRetrieverRegistry reg = AttributeRetrieverRegistry.getInstance(ctx.getPDP());
             Map<String, String> mappings = new HashMap<String, String>();
 
-            // FIXME Still use the NS on current evaluating policy and NS from request
-            // FIXME to do above, we need add a mechanism in JAXB policy loader to read the NS for each policy
-            /* FIXME where can we get these namespaces as we are currently using JAXB instead of XML parser
-            // Additional Namespace mappings.
-            mappings.putAll(policy.getPolicyNamespaceMappings());
-            if (additionalNSMappings != null) {
-                mappings.putAll(additionalNSMappings);
-            }
-            */
+            // Add policy namespace mappings.
+            mappings.putAll(((PolicyNamespaceResolver)ctx.getCurrentEvaluatingPolicy()).getNamespaceMappings());
 
             List<AttributeRetriever> attrRetrs = reg.getAllAttributeRetrievers();
             for (AttributeRetriever attrRetr : attrRetrs) {
@@ -245,5 +265,39 @@ public class AttributeSelectorEvaluator implements Evaluator {
             throw new IndeterminateException("There is error occurs during retrieve attributes from request.", e,
                     Constants.STATUS_SYNTAXERROR);
         }
+    }
+}
+
+
+class NamespaceContextProvider implements NamespaceContext {
+    private Map<String, String> listByPrefix = new Hashtable<String, String>();
+
+    public NamespaceContextProvider() {
+        listByPrefix.put(XMLConstants.XML_NS_PREFIX, XMLConstants.XML_NS_URI);
+        listByPrefix.put(XMLConstants.XMLNS_ATTRIBUTE, XMLConstants.XMLNS_ATTRIBUTE_NS_URI);
+    }
+
+    public void addNSMapping(String prefix, String nsURI) {
+        listByPrefix.put(prefix, nsURI);
+    }
+
+    public String getNamespaceURI (String prefix) {
+        String result = listByPrefix.get(prefix);
+        if (result == null) {
+            return XMLConstants.NULL_NS_URI;
+        }
+        else {
+            return result;
+        }
+    }
+    
+    public String getPrefix (String namespaceURI) {
+        // It's not used for the context
+        return null;
+    }
+    
+    public Iterator<String> getPrefixes (String namespaceURI) {
+        // It's not used for the context
+        return null;
     }
 }

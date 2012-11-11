@@ -7,3 +7,17 @@ Refactory notes:
 	b.Request/Response should has original XML document, if no, we should have ability to build one from scratch.
 4.Create a branch to save the refactory codes.
 5.Maintain the 2 braches, also need fix bug on the original branch.
+
+Some ideas of cache algorithm
+1.Result cache: build up a kind of index mechanism, not based on request, but on each attribute that request carries?
+2.Attribute cache: think about a PDP level AttributeRetriever cache, although the attribute level cache should be responsibility of AttributeRetriever implementation, but it should be nice if we can provide such layer.
+	a.Attribute cache make pre-evaluate some policies possibly -> while policies are loading, we may want to pre-evaluate some parts (Apply part?) of policy because they have been determined by attributes already loaded to attribute cache. In this situation, we need to provide an attribute list that pre-evaluated to EvaliationContext, that it could determine if there is same attribute carried from request.
+3.Policy cache: some kind of indexing algorithm, XEngine + MLOBEE?
+	a.Optimize on some pre-defined functions
+	b.Take the rule's target and condition into account.
+	c.PolicySet will prevent us to build up an efficient index mechanism, we need consider its combination algorithm and work out an optimized way.
+4.Underlying cache layer use a kind of distributed cache system? some light-weight ones and plugable?
+
+Work flow:
+1.Load and pre-evaluate the policies (pre-evaluated policy always referenced to an original, not pre-evaluated one in case we need to evaluate request against orginal one), got a list of attributes (name and type).
+2.Target elements + rule target elements + condition/apply attributes?

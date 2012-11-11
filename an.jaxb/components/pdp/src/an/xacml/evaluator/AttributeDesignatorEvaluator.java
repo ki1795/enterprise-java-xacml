@@ -115,7 +115,7 @@ public class AttributeDesignatorEvaluator implements Evaluator {
         // Trying to get attribute from attribute retrievers.
         AttributeRetrieverRegistry reg = AttributeRetrieverRegistry.getInstance(ctx.getPDP());
 
-        int type = getPossibleTypeOfAttributeId(attrId.toString());
+        int type = getPossibleTypeOfAttributeId(attrId);
         List<AttributeRetriever> attrRetrs = reg.getAttributeRetrieversByType(type);
         for (AttributeRetriever attrRetr : attrRetrs) {
             if (attrRetr.isAttributeSupported(attrId, dataType)) {

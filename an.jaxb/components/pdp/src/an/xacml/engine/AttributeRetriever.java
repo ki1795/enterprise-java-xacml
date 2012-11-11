@@ -73,7 +73,6 @@ public interface AttributeRetriever {
     throws IndeterminateException;
 
     /**
-     * FIXME
      * This method is used by attribute selector to retrieve external attributes.
      * @param requestCtxPath
      * @param dataType
