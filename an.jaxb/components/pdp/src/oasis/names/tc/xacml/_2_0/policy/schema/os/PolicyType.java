@@ -10,13 +10,18 @@ package oasis.names.tc.xacml._2_0.policy.schema.os;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
+
+import an.xacml.engine.PolicyNamespaceResolver;
 
 
 /**
@@ -60,7 +65,7 @@ import javax.xml.bind.annotation.XmlType;
     "combinerParametersOrRuleCombinerParametersOrVariableDefinition",
     "obligations"
 })
-public class PolicyType {
+public class PolicyType implements PolicyNamespaceResolver {
 
     @XmlElement(name = "Description", namespace = "urn:oasis:names:tc:xacml:2.0:policy:schema:os")
     protected String description;
@@ -87,6 +92,9 @@ public class PolicyType {
     @XmlAttribute(name = "RuleCombiningAlgId", required = true)
     @XmlSchemaType(name = "anyURI")
     protected String ruleCombiningAlgId;
+
+    @XmlTransient
+    private Map<String, String> nsMappings;
 
     /**
      * Gets the value of the description property.
@@ -317,4 +325,12 @@ public class PolicyType {
         this.ruleCombiningAlgId = value;
     }
 
+    @Override
+    public Map<String, String> getNamespaceMappings() throws Exception {
+        return this.nsMappings;
+    }
+
+    public void setNamespaceMappings(Map<String, String> mappings) {
+        this.nsMappings = mappings;
+    }
 }

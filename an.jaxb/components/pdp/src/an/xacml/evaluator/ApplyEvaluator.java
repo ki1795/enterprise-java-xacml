@@ -1,0 +1,85 @@
+package an.xacml.evaluator;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.xml.bind.JAXBElement;
+
+import oasis.names.tc.xacml._2_0.policy.schema.os.ApplyType;
+import an.xacml.Constants;
+import an.xacml.engine.BuiltInFunction;
+import an.xacml.engine.BuiltInFunctionRegistry;
+import an.xacml.engine.IndeterminateException;
+import an.xacml.engine.impl.EvaluationContext;
+import an.xacml.function.LogicalFunction;
+
+public class ApplyEvaluator implements Evaluator {
+
+    private ApplyType apply;
+    private String functionId;
+    private List<Object> expressions = new ArrayList<Object>();
+
+    public ApplyEvaluator(Object apply) {
+        this.apply = (ApplyType)apply;
+        initialize();
+    }
+
+    @Override
+    public Object evaluate(EvaluationContext ctx) throws IndeterminateException {
+        try {
+            BuiltInFunctionRegistry functionReg = BuiltInFunctionRegistry.getInstance();
+            BuiltInFunction function = functionReg.lookup(functionId);
+
+            Object[] params = new Object[expressions.size()];
+            // If function is logical function, we won't evaluate the expression, we let function itself to evaluate
+            // it as need. This is a standard specified behavior.
+            if (isLogicalFunction(function)) {
+                params = expressions.toArray();
+            }
+            else {
+                for (int i = 0; i < expressions.size(); i ++) {
+                    params[i] = EvaluatorFactory.getInstance().getEvaluator(expressions.get(i)).evaluate(ctx);
+                }
+            }
+
+            try {
+                return function.invoke(ctx, params);
+            }
+            catch (InvocationTargetException functionInvEx) {
+                // All indeterminate exception throws from function should be processing error, ...
+                Throwable t = functionInvEx.getTargetException();
+                if (t instanceof IndeterminateException) {
+                    // ... except it has already had an definitely status code.
+                    if (((IndeterminateException)t).getStatusCode().equals(Constants.STATUS_UNKNOWNERROR)) {
+                        ((IndeterminateException)t).setStatusCode(Constants.STATUS_PROCESSINGERROR);
+                    }
+                    throw (IndeterminateException)t;
+                }
+                throw functionInvEx;
+            }
+        }
+        catch (IndeterminateException ex) {
+            throw ex;
+        }
+        catch (Exception t) {
+            throw new IndeterminateException("Error occurs while evaluating Apply element.", t, 
+                    Constants.STATUS_PROCESSINGERROR);
+        }
+    }
+
+    private void initialize() {
+        functionId = this.apply.getFunctionId();
+        List<JAXBElement<?>> jaxbExps = this.apply.getExpression();
+        for (JAXBElement<?> elem : jaxbExps) {
+            expressions.add(elem.getValue());
+        }
+    }
+
+    private static boolean isLogicalFunction(BuiltInFunction func) {
+        if (func.getAttribute(LogicalFunction.class) != null) {
+            return true;
+        }
+        return false;
+    }
+}

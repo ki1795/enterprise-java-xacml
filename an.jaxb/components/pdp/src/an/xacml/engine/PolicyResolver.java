@@ -8,22 +8,22 @@ import java.util.List;
  */
 public interface PolicyResolver {
     /**
-     * Return true if the policy identified by policyId is supported by this PolicyResolver. Otherwise return false.
+     * Return true if the policy identified by policyId is resolvable by this PolicyResolver. Otherwise return false.
      * @param policyId
      * @return
      */
-    public boolean isPolicySupported(String policyId);
+    public boolean isResolvable(String policyId);
     /**
      * Resolve a single policy. If current resolver doesn't support the policy identified by policyId, this method
-     * should return null.
+     * will return null.
      * @param policyId
      * @return
      */
-    public Object resolvePolicy(String policyId);
+    public Object resolve(String policyId);
     /**
-     * Return all supported policies by this PolicyResolver. The implementation should have cache mechanism to improve
+     * Return all resolvable policies by this PolicyResolver. The implementation should have cache mechanism to improve
      * the performance.
      * @return
      */
-    public List<Object> resolveAllPolicies();
+    public List<Object> resolveAll();
 }

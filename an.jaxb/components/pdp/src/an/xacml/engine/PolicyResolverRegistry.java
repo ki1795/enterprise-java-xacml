@@ -9,6 +9,7 @@ import java.util.Set;
 import an.config.ConfigElement;
 import an.log.LogFactory;
 import an.log.Logger;
+import an.xacml.PDP;
 
 public class PolicyResolverRegistry {
     public static final String ELEMTYPE_POLICYRESOLVER = "PolicyResolverType";

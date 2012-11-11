@@ -10,9 +10,10 @@ import java.net.URI;
 import deprecated.an.xacml.policy.AttributeValue;
 
 import an.xacml.Constants;
-import an.xacml.IndeterminateException;
-import an.xacml.engine.ctx.EvaluationContext;
-import an.xacml.engine.ctx.FunctionRegistry;
+import an.xacml.engine.BuiltInFunction;
+import an.xacml.engine.BuiltInFunctionRegistry;
+import an.xacml.engine.IndeterminateException;
+import an.xacml.engine.impl.EvaluationContext;
 
 @XACMLFunctionProvider
 public abstract class HighOrderBagFunctions {
@@ -28,7 +29,7 @@ public abstract class HighOrderBagFunctions {
         checkArgumentType(funcId, Constants.TYPE_ANYURI);
 
         try {
-            BuiltInFunction func = FunctionRegistry.getInstance().lookup((URI)funcId.getValue());
+            BuiltInFunction func = BuiltInFunctionRegistry.getInstance().lookup((URI)funcId.getValue());
             for (AttributeValue each : bag) {
                 AttributeValue evalResult = (AttributeValue)func.invoke(ctx, new Object[] {o, each});
                 if (evalResult == TRUE) {
@@ -57,7 +58,7 @@ public abstract class HighOrderBagFunctions {
         checkArgumentType(funcId, Constants.TYPE_ANYURI);
 
         try {
-            BuiltInFunction func = FunctionRegistry.getInstance().lookup((URI)funcId.getValue());
+            BuiltInFunction func = BuiltInFunctionRegistry.getInstance().lookup((URI)funcId.getValue());
             for (AttributeValue each : bag) {
                 AttributeValue evalResult = (AttributeValue)func.invoke(ctx, new Object[] {o, each});
                 if (evalResult == FALSE) {
@@ -86,7 +87,7 @@ public abstract class HighOrderBagFunctions {
         checkArgumentType(funcId, Constants.TYPE_ANYURI);
 
         try {
-            BuiltInFunction func = FunctionRegistry.getInstance().lookup((URI)funcId.getValue());
+            BuiltInFunction func = BuiltInFunctionRegistry.getInstance().lookup((URI)funcId.getValue());
             for (AttributeValue each1 : bag1) {
                 for (AttributeValue each2 : bag2) {
                     AttributeValue evalResult = (AttributeValue)func.invoke(ctx, new Object[] {each1, each2});
@@ -117,7 +118,7 @@ public abstract class HighOrderBagFunctions {
         checkArgumentType(funcId, Constants.TYPE_ANYURI);
 
         try {
-            BuiltInFunction func = FunctionRegistry.getInstance().lookup((URI)funcId.getValue());
+            BuiltInFunction func = BuiltInFunctionRegistry.getInstance().lookup((URI)funcId.getValue());
             for (AttributeValue each1 : bag1) {
                 boolean flag = false;
                 for (AttributeValue each2 : bag2) {
@@ -153,7 +154,7 @@ public abstract class HighOrderBagFunctions {
         checkArgumentType(funcId, Constants.TYPE_ANYURI);
 
         try {
-            BuiltInFunction func = FunctionRegistry.getInstance().lookup((URI)funcId.getValue());
+            BuiltInFunction func = BuiltInFunctionRegistry.getInstance().lookup((URI)funcId.getValue());
             for (AttributeValue each1 : bag1) {
                 boolean flag = true;
                 for (AttributeValue each2 : bag2) {
@@ -189,7 +190,7 @@ public abstract class HighOrderBagFunctions {
         checkArgumentType(funcId, Constants.TYPE_ANYURI);
 
         try {
-            BuiltInFunction func = FunctionRegistry.getInstance().lookup((URI)funcId.getValue());
+            BuiltInFunction func = BuiltInFunctionRegistry.getInstance().lookup((URI)funcId.getValue());
             for (AttributeValue each1 : bag1) {
                 for (AttributeValue each2 : bag2) {
                     AttributeValue evalResult = (AttributeValue)func.invoke(ctx, new Object[] {each1, each2});
@@ -219,7 +220,7 @@ public abstract class HighOrderBagFunctions {
 
         AttributeValue[] result = new AttributeValue[bag.length];
         try {
-            BuiltInFunction func = FunctionRegistry.getInstance().lookup((URI)funcId.getValue());
+            BuiltInFunction func = BuiltInFunctionRegistry.getInstance().lookup((URI)funcId.getValue());
             for (int i = 0; i < bag.length; i ++) {
                 result[i] = (AttributeValue)func.invoke(ctx, new Object[] {bag[i]});
             }

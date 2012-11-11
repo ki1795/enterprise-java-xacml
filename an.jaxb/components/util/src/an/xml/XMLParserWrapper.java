@@ -40,7 +40,14 @@ import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
+import an.config.ConfigurationException;
+
+// TODO clean up this class, remove unused functions since we've moved to JAXB
 public abstract class XMLParserWrapper {
+
+    public static final String POLICY_KEY_DEFAULT_SCHEMA_FILE = "an.xacml.policy.DefaultSchema";
+    public static final String CONTEXT_KEY_DEFAULT_SCHEMA_FILE = "an.xacml.context.DefaultSchema";
+
     /**
      * Since current version of Xerces (2.9.x) has several bugs, we have to rely on Sun's implementation. In order
      * to keep the effect inside only our project (Customer may use Xerces or other DOM implementations, we don't
@@ -321,6 +328,24 @@ public abstract class XMLParserWrapper {
             }
         }
         return nsMap;
+    }
+
+    public static String getPolicyDefaultSchema() throws ConfigurationException {
+        // We provider default value for the schema file
+        String schema = System.getProperty(XMLParserWrapper.POLICY_KEY_DEFAULT_SCHEMA_FILE, "xacml-2.0-policy.xsd");
+        if (schema == null) {
+            throw new ConfigurationException("The required policy schema file is not configured.");
+        }
+        return schema;
+    }
+
+    public static String getContextDefaultSchema() throws ConfigurationException {
+        // We provider default value for the schema file
+        String schema = System.getProperty(XMLParserWrapper.CONTEXT_KEY_DEFAULT_SCHEMA_FILE, "xacml-2.0-context.xsd");
+        if (schema == null) {
+            throw new ConfigurationException("The required context schema file is not configured.");
+        }
+        return schema;
     }
 }
 

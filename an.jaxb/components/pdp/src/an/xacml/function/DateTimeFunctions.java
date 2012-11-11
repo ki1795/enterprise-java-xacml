@@ -11,8 +11,8 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import deprecated.an.xacml.policy.AttributeValue;
 
 import an.xacml.Constants;
-import an.xacml.IndeterminateException;
-import an.xacml.engine.ctx.EvaluationContext;
+import an.xacml.engine.IndeterminateException;
+import an.xacml.engine.impl.EvaluationContext;
 
 @XACMLFunctionProvider
 public abstract class DateTimeFunctions {

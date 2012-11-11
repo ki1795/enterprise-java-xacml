@@ -1,6 +1,6 @@
 package an.xacml.function;
 
-import static an.xacml.engine.ctx.EvaluationContext.isPolicyXPathVersionSupported;
+import static an.xacml.engine.impl.EvaluationContext.isPolicyXPathVersionSupported;
 import static an.xacml.function.CommonFunctions.checkArgumentType;
 import static an.xacml.function.CommonFunctions.checkArguments;
 import static deprecated.an.xacml.policy.AttributeValue.FALSE;
@@ -22,8 +22,8 @@ import deprecated.an.xacml.policy.AttributeValue;
 import deprecated.an.xacml.policy.NamespaceContextProvider;
 
 import an.xacml.Constants;
-import an.xacml.IndeterminateException;
-import an.xacml.engine.ctx.EvaluationContext;
+import an.xacml.engine.IndeterminateException;
+import an.xacml.engine.impl.EvaluationContext;
 
 @XACMLFunctionProvider
 public abstract class XPathFunctions {
