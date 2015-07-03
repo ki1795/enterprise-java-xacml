@@ -3,6 +3,11 @@ package an.example;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.lang.String;
+import java.util.Scanner;
 
 import an.config.ConfigElement;
 import an.config.Configuration;
@@ -18,6 +23,15 @@ import an.xacml.context.Result;
 import an.xacml.engine.EvaluationContext;
 import an.xacml.engine.PDP;
 import an.xacml.policy.AbstractPolicy;
+
+import java.io.*;
+
+//import java.util.*;
+import org.dom4j.*;
+import org.dom4j.io.*;
+
+import produceXML.requestXMLvector;
+import produceXML.readXML;
 
 public class PDPSample {
     private PDP pdp;
@@ -62,7 +76,12 @@ public class PDPSample {
         if (logger.isDebugEnabled()) {
             ByteArrayOutputStream tempOut = new ByteArrayOutputStream();
             XACMLParser.dumpResponse(actualResponse, tempOut);
-            logger.debug("Dump actual response: " + tempOut.toString());
+			
+            String tempOutString= tempOut.toString(); //
+            logger.debug("Dump actual response: " + tempOutString);
+			
+			InputStream is = new ByteArrayInputStream(tempOutString.getBytes());
+			readXML result = new readXML(is);
         }
     }
 
@@ -76,10 +95,18 @@ public class PDPSample {
             logger.debug("Dump actual response: " + tempOut.toString());
         }
     }
-
+        
+    
     public static void main(String[] args) {
         CommandLineArguments cmdLine = new CommandLineArguments(REQUIRED_ARGS, null);
         PDPSample sample = null;
+        
+        System.out.println("讀入的引數: ");
+        for(int i=0; i<args.length; i++){
+        	System.out.println(args[i] + " ");
+        }
+        System.out.println(" ");
+            
         try {
             cmdLine.parse(args);
 
@@ -89,21 +116,30 @@ public class PDPSample {
             if (configFile != null) {
                 sample = new PDPSample(new Configuration(configFile));
                 sample.start();
+                
+                //while(true){
+                	requestXMLvector req = new requestXMLvector();
+                	req.buildXML(reqFile);
+                //System.out.println(reqFile);
 
                 // Load request from file.
-                Request request = XACMLParser.parseRequest(new FileInputStream(reqFile));
+                	Request request = XACMLParser.parseRequest(new FileInputStream(reqFile));
+
                 // Evaluate the request against PDP which may hold 100, 1000 or 10000 policies. Let PDP retrieve
                 // the matchable policies and evaluate them
-                sample.evaluateRequestAgainstPDP(request);
+                	sample.evaluateRequestAgainstPDP( request );
+                //}
 
+//                sample.refresh();
+//                System.out.println(sample.policyDir);
                 // List all policies under policy data store directory, then send the request to each policy one by one.
-                File dir = new File(sample.policyDir);
-                File[] policyFiles = dir.listFiles();
-                for (File policyFile : policyFiles) {
-                    if (policyFile.isFile() && policyFile.getName().endsWith(".xml")) {
-                        sample.evaluateRequestAgainstPolicy(request, XACMLParser.parsePolicy(new FileInputStream(policyFile)));
-                    }
-                }
+//                File dir = new File(sample.policyDir);
+//                File[] policyFiles = dir.listFiles();
+//                for (File policyFile : policyFiles) {
+//                    if (policyFile.isFile() && policyFile.getName().endsWith(".xml")) {
+//                        sample.evaluateRequestAgainstPolicy(request, XACMLParser.parsePolicy(new FileInputStream(policyFile)));
+//                    }
+//                	}
             }
             else {
                 throw new InvalidCommandLineArgumentException(
